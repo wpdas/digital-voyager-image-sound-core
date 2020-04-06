@@ -1,0 +1,13 @@
+.DS_Store
+
+.env
+node_modules/
+lib/
+
+src/**/*.js
+src/**/*.map
+tests/**/*.wav
+tests/**/*.png
+coverage
+
+yarn-error.log

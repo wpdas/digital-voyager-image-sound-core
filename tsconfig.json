@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "outDir": "lib",
+    "baseUrl": "src",
+    "declaration": true,
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "types": ["node", "jest"],
+
+    /* Additional Checks */
+    "noUnusedLocals": true /* Report errors on unused locals. */,
+    "noUnusedParameters": true /* Report errors on unused parameters. */,
+    "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+    "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
+
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts", "test/**/*.test.ts"],
+  "exclude": ["node_modules"]
+}
