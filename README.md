@@ -54,3 +54,7 @@ feature/BitToneBuffer:
 ## Como usar
 
 O projeto tem diversos testes. Por hora, use-os como documentação. Esse conteúdo vai ser melhorado posteriormente.
+
+## Roadmap
+
+- Capacidade de ler bites em tempo real. Enquanto o audio está sendo tocado.
