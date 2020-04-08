@@ -1,13 +1,28 @@
 import { createReadStream } from 'fs';
-import path from 'path';
 import { DecodedChunks, Reader } from '../../src';
-import { iconBits } from './mocks';
+import { iconPng, decimalNumber29Wav } from '../mocks';
+import DecimalNumber from '../../src/feature/loaders/DecimalNumber';
 
 describe('Reader', () => {
   test('Read icon bits stored in audio frequency', async (done) => {
     const reader: Reader = new Reader();
-    const bits = await reader.loadFile(path.join(__dirname, 'icon.wav'));
-    expect(bits).toBe(iconBits);
+    const bits = await reader.getBitsFromFile(iconPng.wavFile);
+    expect(bits).toBe(iconPng.bits);
+    done();
+  });
+
+  test(`Read the typeId information stored in the header of a generated 
+  file using DecimalNumber loader`, async (done) => {
+    // Reader(ignoreHeaderBits = true); That means the Reader will return only
+    // the data bits ignoring the basic header bits. Should be used when loading
+    // a wav file generated with a Header defined by some Loader (e.g.: DecimalNumber)
+    const reader: Reader = new Reader(true);
+    const typeId = await reader.loadFileHeaderTypeId(
+      decimalNumber29Wav.wavFile
+    );
+
+    // Must be the same typeId of the Decimal Number.header
+    expect(typeId).toBe(DecimalNumber.header.getHeaderTypeId());
     done();
   });
 
@@ -15,9 +30,9 @@ describe('Reader', () => {
     const decodedChunks: DecodedChunks = new DecodedChunks();
     const reader: Reader = new Reader();
 
-    createReadStream(path.join(__dirname, 'icon.wav'))
+    createReadStream(iconPng.wavFile)
       .on('data', async (bufferChunk: Buffer) => {
-        const bufferChunkBytes = await reader.getBitsFromChunkBuffer(
+        const bufferChunkBytes = await reader.getBitsFromBufferChunks(
           bufferChunk
         );
 
@@ -38,7 +53,7 @@ describe('Reader', () => {
 
         expect(decodedChunks.getSize()).toBe(1128);
         expect(decodedChunks.previewFinalFileSize().toFixed(3)).toBe('0.199');
-        expect(decodedChunks.getBits()).toBe(iconBits);
+        expect(decodedChunks.getBits()).toBe(iconPng.bits);
 
         done();
       });

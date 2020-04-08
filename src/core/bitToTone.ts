@@ -6,7 +6,7 @@ import { WAV_TONE_FREQUENCY } from '../constants';
 /**
  * Converts bytes to audio tone
  *
- * Each tone registers 88 bits of information.
+ * Each tone registers 176 bytes of information.
  *
  * @param {FileWriter} writer
  * @param {string} bytes Sequence of bits (Must be a multiple of 8 bits)

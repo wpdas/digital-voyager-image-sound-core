@@ -1,7 +1,9 @@
 import decimalToBinary from 'core/decimalToBinary';
+import binaryToDecimal from 'core/binaryToDecimal';
 
 interface IHeader {
   readonly getHeaderBits: () => string;
+  readonly getHeaderTypeId: () => number;
 }
 
 class Header implements IHeader {
@@ -31,7 +33,16 @@ class Header implements IHeader {
     }
   }
 
+  /**
+   * Get the Header bits
+   */
   getHeaderBits = () => this.typeId + this.additionalParams;
+
+  /**
+   * Get typeId data from Header.
+   * @return typeId data in decimal number format. e.g.: 29
+   */
+  getHeaderTypeId = () => binaryToDecimal(this.typeId);
 }
 
 export default Header;
