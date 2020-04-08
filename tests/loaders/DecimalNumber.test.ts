@@ -1,6 +1,6 @@
 import path from 'path';
+import { promises } from 'fs';
 
-import loadersTypesId from '../../src/loadersTypesId';
 import Recorder from '../../src/feature/Recorder';
 import Reader from '../../src/feature/Reader';
 import DecimalNumber from '../../src/feature/loaders/DecimalNumber';
@@ -25,23 +25,26 @@ describe('DecimalNumber', () => {
     expect(DecimalNumber.decode('0000000000011101')).toBe(numberA);
   });
 
-  test.only('Record and Read bits and show the final content', async (done) => {
+  test('Record and Read bits and show the final content', async (done) => {
     const outputFile = path.join(__dirname, 'output.wav');
     const recorder: Recorder = new Recorder(outputFile, DecimalNumber.header);
-    const reader: Reader = new Reader();
+    const reader: Reader = new Reader(true);
 
-    const message = DecimalNumber.encode(29);
+    const valueTest = 29;
+    const message = DecimalNumber.encode(valueTest);
 
     recorder.on('done', async () => {
       // Load the typeId from file Header, so that we can certify
       // we are using the properly Loader decoder
       const fileTypeId = await reader.loadFileHeaderTypeId(outputFile);
-      expect(fileTypeId).toBe(loadersTypesId.DECIMAL_NUMBER);
-
-      // (!) Ok, mas como tratar os bits ignorando os 8 bits da Header?
+      expect(fileTypeId).toBe(DecimalNumber.header.getHeaderTypeId());
 
       const bits = await reader.getBitsFromFile(outputFile);
-      console.log(bits);
+      const decodedMessage = DecimalNumber.decode(bits);
+      expect(decodedMessage).toBe(valueTest);
+
+      // Delete file
+      await promises.unlink(outputFile);
       done();
     });
 

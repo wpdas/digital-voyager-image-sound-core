@@ -7,7 +7,9 @@ lib/
 src/**/*.js
 src/**/*.map
 tests/**/*.wav
+!tests/mocks/**/*.wav
 tests/**/*.png
+!tests/mocks/**/*.png
 coverage
 
 yarn-error.log
