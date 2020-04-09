@@ -8,26 +8,24 @@
  * it will use only the necessary amount of bytes (multiple of 8 bits);
  *
  * @param {number} numberValue decimal number value
- * @param {number} bytesDepth amount of bytes (8 bits per byte). Infinite if not informed.
+ * @param {number} bitsDepth amount of bits (8 bits = 1 byte). Infinite if not informed.
  * @returns {string}
  */
-const decimalToBinary = (numberValue: number, bytesDepth?: number) => {
+const decimalToBinary = (numberValue: number, bitsDepth?: number) => {
   const bits = numberValue.toString(2);
   const currentBitsSize = bits.length;
   let nullBits: string;
 
   // Limits the amount of bits
-  if (bytesDepth != null) {
-    const expectedDepthBitsSize = bytesDepth * 8;
-
+  if (bitsDepth != null) {
     // Bytes depth should support the numberValue bits
-    if (currentBitsSize > expectedDepthBitsSize) {
+    if (currentBitsSize > bitsDepth) {
       throw new Error(
         'Bytes depth is not enough to store the passed numberValue.'
       );
     }
 
-    nullBits = Array(expectedDepthBitsSize - currentBitsSize)
+    nullBits = Array(bitsDepth - currentBitsSize)
       .fill('0')
       .join('');
   } else {

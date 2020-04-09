@@ -1,6 +1,6 @@
 import { FileWriter } from 'wav';
 import bitToTone from 'core/bitToTone';
-import Header from './loaders/utils/Header';
+import { DEFAULT_BITS_DEPTH } from '../constants';
 
 interface IRecorder {
   writeBits: (bits: string) => void;
@@ -22,17 +22,12 @@ class Recorder implements IRecorder {
    * Bits data will be saved as sound frequencies
    *
    * @param {string} outputFile output filename
-   * @param {Header} header Cabeçalho do arquivo
    */
-  constructor(outputFile: string, header?: Header) {
+  constructor(outputFile: string) {
     this.writer = new FileWriter(outputFile, {
       bitDepth: 16,
       channels: 1,
     });
-
-    if (header != null) {
-      this.writeBits(header.getHeaderBits());
-    }
   }
 
   /**
@@ -47,7 +42,7 @@ class Recorder implements IRecorder {
     const cleanedBits = bits.replace(/[^0-1]/g, '');
 
     // Must be a multiple of 8 (8 bits)
-    if (cleanedBits.length % 8 === 0) {
+    if (cleanedBits.length % DEFAULT_BITS_DEPTH === 0) {
       bitToTone(this.writer, cleanedBits);
     } else {
       throw new Error(
