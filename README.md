@@ -43,6 +43,8 @@ feature/loaders/utils/Header:
 
 ## Loaders ( Usados para interpretar os bits em informação humana como texto, número, imagem, etc )
 
+Cada Loade deve ter obrigatoriamente Um Header e dois métodos (encode e decode). Encode exige que a saída seja do tipo `EncodeOutput`. Após receber uma instancia do `EncodeOutput` basta você chamar a propriedade `bits`. Exemplo: `myEncodedOutput.bits`.
+
 - DecimalNumber: O primeiro tipo de arquivo suportado pelo programa criado. Pode salvar números decimais convertidos em bits dentro de uma frequência de arquivo de audio WAV. Você pode ver como usar através dos testes na pasta 'tests/loaders/DecimalNumber.test.ts'.
 
 - Alphanumeric: Este loader pode ser usado para codificar e decodificar informações suportando uma grande maioria das caracteres usadas no mundo. Na verdade suporta qualquer um até os testes atuais baseado na arquitetura atual deste loader. Os bits de cada caractere são armazenados usando a maior quantidade de bits necessarios do maior caractere. Por exemplo, se um caractere X gasta 10 bits (em binario), todos os outros precisam usar também este espaço, mesmo que não necessite. Sempre o maior valor de bits do maior caractere será usado como padrão para as menores. Este loader já faz este tratamento.
@@ -65,4 +67,6 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 
 - Capacidade de ler bites em tempo real. Enquanto o audio está sendo tocado.
 - Recorder deve passar um Loader type no segundo parametro? Ou continuar pedindo apenas o Header type?
-- Capacidade para ler outros formatos de arquivos de áudio e extrair os bits, exemplo: mp3, ogg, etc
+- Capacidade para ler outros formatos de arquivos de áudio e extrair os bits, exemplo: mp3, ogg, etc.
+- Usar [TypeDoc](https://typedoc.org/) para gerar documentação?
+- Trocar os recursos deprecados do Buffer pelos recomendados e mais seguros.

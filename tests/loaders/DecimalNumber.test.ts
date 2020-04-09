@@ -4,19 +4,20 @@ import { promises } from 'fs';
 import Recorder from '../../src/feature/Recorder';
 import Reader from '../../src/feature/Reader';
 import DecimalNumber from '../../src/feature/loaders/DecimalNumber';
+import EncodeOutput from '../../src/feature/loaders/utils/EncodeOutput';
 
 describe('DecimalNumber', () => {
   test('Encode and decode number without set limit for bits depth', () => {
     const loader: DecimalNumber = new DecimalNumber();
 
     const numberA = 29;
-    const numberAinBits = loader.encode(numberA);
-    expect(numberAinBits).toBe('0000000000011101');
+    const numberAinBits: EncodeOutput = loader.encode(numberA);
+    expect(numberAinBits.bits).toBe('0000000000011101');
     expect(loader.decode('0000000000011101')).toBe(numberA);
 
     const numberB = 255;
-    const numberBinBits = loader.encode(numberB);
-    expect(numberBinBits).toBe('0000000011111111');
+    const numberBinBits: EncodeOutput = loader.encode(numberB);
+    expect(numberBinBits.bits).toBe('0000000011111111');
     expect(loader.decode('0000000011111111')).toBe(numberB);
   });
 
@@ -24,8 +25,8 @@ describe('DecimalNumber', () => {
     const loader: DecimalNumber = new DecimalNumber();
 
     const numberA = 29;
-    const numberAinBits = loader.encode(numberA, 8);
-    expect(numberAinBits).toBe('0000000000011101');
+    const numberAinBits: EncodeOutput = loader.encode(numberA, 8);
+    expect(numberAinBits.bits).toBe('0000000000011101');
     expect(loader.decode('0000000000011101')).toBe(numberA);
   });
 
@@ -36,7 +37,7 @@ describe('DecimalNumber', () => {
     const loader: DecimalNumber = new DecimalNumber();
 
     const valueTest = 29;
-    const message = loader.encode(valueTest);
+    const message: EncodeOutput = loader.encode(valueTest);
 
     recorder.on('done', async () => {
       // Load the typeId from file Header, so that we can certify
@@ -53,7 +54,7 @@ describe('DecimalNumber', () => {
       done();
     });
 
-    recorder.writeBits(message);
+    recorder.writeBits(message.bits);
     recorder.end();
   });
 });

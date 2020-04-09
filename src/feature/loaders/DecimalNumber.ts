@@ -1,15 +1,17 @@
+import ILoader from './ILoader';
 import decimalToBinary from 'core/decimalToBinary';
 import binaryToDecimal from 'core/binaryToDecimal';
 import Header from './utils/Header';
+import EncodeOutput from './utils/EncodeOutput';
 import loadersTypesId from '../../loadersTypesId';
 import { TYPE_ID_BITS_SIZE } from '../../constants';
 
-class DecimalNumber {
-  // Define the Header of this loader
+class DecimalNumber implements ILoader<number> {
   public header: Header = new Header(loadersTypesId.DECIMAL_NUMBER);
 
   /**
-   * DecimalNumber Loader - encoder and decoder
+   * DecimalNumber Loader - encoder and decoder. You can use it for handle with
+   * decimal numbers (the common numbers we know as a human).
    *
    * The header is storing one parameter:
    * typeId: 8 bits
@@ -29,9 +31,9 @@ class DecimalNumber {
    * @param {number} bitsDepth amount of bits (8 bits = 1 byte). Infinite if not informed.
    * @returns {string}
    */
-  public encode(numberValue: number, bitsDepth?: number) {
+  public encode(numberValue: number, bitsDepth?: number): EncodeOutput {
     const output = decimalToBinary(numberValue, bitsDepth);
-    return this.header.getHeaderBits() + output;
+    return new EncodeOutput(this.header, output);
   }
 
   /**
