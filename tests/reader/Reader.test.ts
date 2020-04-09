@@ -16,13 +16,15 @@ describe('Reader', () => {
     // Reader(ignoreHeaderBits = true); That means the Reader will return only
     // the data bits ignoring the basic header bits. Should be used when loading
     // a wav file generated with a Header defined by some Loader (e.g.: DecimalNumber)
-    const reader: Reader = new Reader(true);
+    const reader: Reader = new Reader();
+    const loader: DecimalNumber = new DecimalNumber();
+
     const typeId = await reader.loadFileHeaderTypeId(
       decimalNumber29Wav.wavFile
     );
 
     // Must be the same typeId of the Decimal Number.header
-    expect(typeId).toBe(DecimalNumber.header.getHeaderTypeId());
+    expect(typeId).toBe(loader.header.getHeaderTypeId());
     done();
   });
 

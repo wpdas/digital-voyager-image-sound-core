@@ -2,10 +2,19 @@ import decimalToBinary from 'core/decimalToBinary';
 import binaryToDecimal from 'core/binaryToDecimal';
 import Header from './utils/Header';
 import loadersTypesId from '../../loadersTypesId';
+import { TYPE_ID_BITS_SIZE } from '../../constants';
 
 class DecimalNumber {
   // Define the Header of this loader
-  public static header: Header = new Header(loadersTypesId.DECIMAL_NUMBER);
+  public header: Header = new Header(loadersTypesId.DECIMAL_NUMBER);
+
+  /**
+   * DecimalNumber Loader - encoder and decoder
+   *
+   * The header is storing one parameter:
+   * typeId: 8 bits
+   */
+  constructor() {}
 
   /**
    * Converts decimal number to bits (multiple of 8 bits)
@@ -17,11 +26,12 @@ class DecimalNumber {
    * it will use only the necessary amount of bytes (multiple of 8 bits);
    *
    * @param {number} numberValue decimal number value
-   * @param {number} bytesDepth amount of bytes (8 bits per byte). Infinite if not informed.
+   * @param {number} bitsDepth amount of bits (8 bits = 1 byte). Infinite if not informed.
    * @returns {string}
    */
-  public static encode(numberValue: number, bytesDepth?: number) {
-    return decimalToBinary(numberValue, bytesDepth);
+  public encode(numberValue: number, bitsDepth?: number) {
+    const output = decimalToBinary(numberValue, bitsDepth);
+    return this.header.getHeaderBits() + output;
   }
 
   /**
@@ -29,8 +39,9 @@ class DecimalNumber {
    * @param {string} bitsSquence bits of a decimal number
    * @returns {number} decimal number
    */
-  public static decode(bitsSquence: string) {
-    return binaryToDecimal(bitsSquence);
+  public decode(bitsSquence: string) {
+    const bitsWithoutHeader = bitsSquence.slice(TYPE_ID_BITS_SIZE);
+    return binaryToDecimal(bitsWithoutHeader);
   }
 }
 

@@ -19,6 +19,12 @@ const bitToTone = (writer: FileWriter, bytes: string) => {
     const currentBits = bits.split('');
 
     currentBits.forEach((bit: string) => {
+      if (bit !== '0' && bit !== '1') {
+        throw new Error(
+          `Only bits (0, 1) can be stored on audio frequency, but received ${bit}`
+        );
+      }
+
       const currentBit = Number(bit);
 
       writer.write(

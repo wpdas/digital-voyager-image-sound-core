@@ -1,4 +1,9 @@
 /**
+ * Project bits depth.
+ */
+export const DEFAULT_BITS_DEPTH = 8;
+
+/**
  * WAV Header bytes size
  */
 export const WAV_HEADER_BYTES_SIZE = 44;

@@ -1,6 +1,7 @@
 import { padImageData, createBitmapFile } from '../../tools/bitmap';
 
 class Bitmap1bppLoader {}
+// https://github.com/ericandrewlewis/bitmap-js
 
 const width = 8;
 const height = 6;
@@ -12,7 +13,7 @@ const colorTable = Buffer.from([
   0x00,
   0xff,
   0xff,
-  0x00
+  0x00,
 ]);
 
 const imageData = padImageData({
@@ -22,10 +23,10 @@ const imageData = padImageData({
     0b01000010,
     0b00000000,
     0b00100100,
-    0b00000000
+    0b00000000,
   ]),
   width,
-  height
+  height,
 });
 
 await createBitmapFile({
@@ -34,5 +35,5 @@ await createBitmapFile({
   width,
   height,
   bitsPerPixel: 1,
-  colorTable
+  colorTable,
 });

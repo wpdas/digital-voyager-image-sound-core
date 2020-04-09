@@ -48,7 +48,8 @@ interface IHeader {
   numberOfImportantColors: number;
 }
 
-function padImageData({ unpaddedImageData, width, height }: IPadImageData) {
+// function padImageData({ unpaddedImageData, width, height }: IPadImageData) {
+export const padImageData = ({ unpaddedImageData, height }: IPadImageData) => {
   const colorValuesPerRow = unpaddedImageData.length / height;
   const padding = 4 - (colorValuesPerRow % 4);
   const unpaddedRowLength = colorValuesPerRow;
@@ -63,13 +64,13 @@ function padImageData({ unpaddedImageData, width, height }: IPadImageData) {
     );
   }
   return padded;
-}
+};
 
-function bitmapFileHeader({
+export const bitmapFileHeader = ({
   filesize = 0,
   applicationHeader = 0,
-  imageDataOffset = 0
-}) {
+  imageDataOffset = 0,
+}) => {
   const buffer = Buffer.alloc(14);
   // A bitmap file starts with a "BM" in ASCII.
   buffer.write('B', 0);
@@ -81,17 +82,17 @@ function bitmapFileHeader({
   // The byte offset to access the pixel data.
   buffer.writeInt32LE(imageDataOffset, 10);
   return buffer;
-}
+};
 
 // Creates a DIB header, specifically a BITMAPINFOHEADER type
 // since it's the most widely supported.
-function dibHeader({
+export const dibHeader = ({
   width,
   height,
   bitsPerPixel,
   bitmapDataSize,
-  numberOfColorsInPalette
-}: IDibHeader) {
+  numberOfColorsInPalette,
+}: IDibHeader) => {
   const buffer = Buffer.alloc(40);
   // The size of the header.
   buffer.writeInt32LE(40, 0);
@@ -114,23 +115,23 @@ function dibHeader({
   // Number of important colors used.
   buffer.writeInt32LE(0, 36);
   return buffer;
-}
+};
 
-function createBitmapFile({
+export const createBitmapFile = ({
   filename,
   imageData,
   width,
   height,
   bitsPerPixel,
-  colorTable = Buffer.alloc(0)
-}: ICreateBitmapFile) {
+  colorTable = Buffer.alloc(0),
+}: ICreateBitmapFile) => {
   return new Promise((resolve, reject) => {
     const imageDataOffset = 54 + colorTable.length;
     const filesize = imageDataOffset + imageData.length;
     let fileContent = Buffer.alloc(filesize);
     let fileHeader = bitmapFileHeader({
       filesize,
-      imageDataOffset
+      imageDataOffset,
     });
     fileHeader.copy(fileContent);
     dibHeader({
@@ -138,26 +139,26 @@ function createBitmapFile({
       height,
       bitsPerPixel,
       bitmapDataSize: imageData.length,
-      numberOfColorsInPalette: colorTable.length / 4
+      numberOfColorsInPalette: colorTable.length / 4,
     }).copy(fileContent, 14);
 
     colorTable.copy(fileContent, 54);
 
     imageData.copy(fileContent, imageDataOffset);
 
-    writeFile(filename, fileContent, err => {
+    writeFile(filename, fileContent, (err) => {
       if (err) return reject(err);
       resolve();
     });
   });
-}
+};
 
-function readBitmapFileHeader(filedata: Buffer) {
+export const readBitmapFileHeader = (filedata: Buffer) => {
   return {
     filesize: filedata.readInt32LE(2),
-    imageDataOffset: filedata.readInt32LE(10)
+    imageDataOffset: filedata.readInt32LE(10),
   };
-}
+};
 
 const dibHeaderLengthToVersionMap: Map<number, string> = new Map([
   [12, 'BITMAPCOREHEADER'],
@@ -167,10 +168,10 @@ const dibHeaderLengthToVersionMap: Map<number, string> = new Map([
   [56, 'BITMAPV3INFOHEADER'],
   [64, 'OS22XBITMAPHEADER'],
   [108, 'BITMAPV4HEADER'],
-  [124, 'BITMAPV5HEADER']
+  [124, 'BITMAPV5HEADER'],
 ]);
 
-function readDibHeader(filedata: Buffer) {
+export const readDibHeader = (filedata: Buffer) => {
   const dibHeaderLength = filedata.readInt32LE(14);
   const header = {} as IHeader;
   header.headerLength = dibHeaderLength;
@@ -195,17 +196,17 @@ function readDibHeader(filedata: Buffer) {
   // I hear that BITMAPINFOHEADER is the most widely supported
   // header type, so I'm not going to implement them yet.
   return header;
-}
+};
 
-function readColorTable(filedata: Buffer) {
+export const readColorTable = (filedata: Buffer) => {
   const dibHeader = readDibHeader(filedata);
   const colorTable = Buffer.alloc(dibHeader.numberOfColorsInPalette * 4);
-  const sourceStart = 14 + dibHeader.headerLength;
+  // const sourceStart = 14 + dibHeader.headerLength;
   filedata.copy(colorTable, 0, 54, 54 + colorTable.length);
   return colorTable;
-}
+};
 
-function readBitmapFile(file: string) {
+export const readBitmapFile = (file: string) => {
   return new Promise((resolve, reject) => {
     readFile(file, (err, filedata) => {
       if (err) return reject(err);
@@ -220,19 +221,8 @@ function readBitmapFile(file: string) {
         fileHeader,
         dibHeader,
         imageData,
-        colorTable
+        colorTable,
       });
     });
   });
-}
-
-export = {
-  padImageData,
-  bitmapFileHeader,
-  readBitmapFileHeader,
-  readDibHeader,
-  dibHeader,
-  createBitmapFile,
-  readBitmapFile,
-  readColorTable
 };
