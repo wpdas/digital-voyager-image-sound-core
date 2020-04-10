@@ -7,7 +7,10 @@ import ILoader from './ILoader';
 import Header from './utils/Header';
 import EncodeOutput from './utils/EncodeOutput';
 import loadersTypesId from 'loadersTypesId';
-import { DEFAULT_BITS_DEPTH, TYPE_ID_BITS_SIZE } from '../../constants';
+import { TYPE_ID_BITS_SIZE } from '../../constants';
+import asciiToBits from 'core/asciiToBits';
+import bitsToAscii from 'core/bitsToAscii';
+import readBitsChunk from 'core/readBitsChunk';
 
 class ASCIIText implements ILoader<string> {
   public header: Header = new Header(loadersTypesId.ASCII_TEXT);
@@ -26,32 +29,19 @@ class ASCIIText implements ILoader<string> {
    * @param text ASCII text format (UTF8)
    */
   encode(text: string): EncodeOutput {
-    let result = '';
-    for (let i = 0; i < text.length; i++) {
-      const bin = text[i].charCodeAt(0).toString(2);
-      if (DEFAULT_BITS_DEPTH - bin.length + 1 < 1) {
-        throw new Error(
-          `Invalid characters. You must use only ASCII characters. Check the ASCII characters table here: https://www.rapidtables.com/code/text/ascii-table.html`
-        );
-      }
-      result += Array(DEFAULT_BITS_DEPTH - bin.length + 1).join('0') + bin;
-    }
+    let result = asciiToBits(text);
     return new EncodeOutput(this.header, result);
   }
 
   /**
    * Converts bits containing ASCII-UTF8 characters data to ASCII format itself
-   * @param bitsSquence Bits
+   * @param bitsSequence Bits
    */
-  decode(bitsSquence: string) {
+  decode(bitsSequence: string) {
     // Get only data bits without header information
-    const bitsWithoutHeader = bitsSquence.slice(TYPE_ID_BITS_SIZE);
-
-    let result = '';
-    const arr = bitsWithoutHeader.match(/.{1,8}/g) || [];
-    for (var i = 0; i < arr.length; i++) {
-      result += String.fromCharCode(parseInt(arr[i], 2));
-    }
+    const result = bitsToAscii(
+      readBitsChunk(bitsSequence, null, TYPE_ID_BITS_SIZE)
+    );
     return result;
   }
 }

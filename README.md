@@ -70,3 +70,4 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Capacidade para ler outros formatos de arquivos de áudio e extrair os bits, exemplo: mp3, ogg, etc.
 - Usar [TypeDoc](https://typedoc.org/) para gerar documentação?
 - Trocar os recursos deprecados do Buffer pelos recomendados e mais seguros.
+- Mover BitToneBuffer.ts e bitmap.ts para a pasta core;
