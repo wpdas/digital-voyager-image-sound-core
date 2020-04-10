@@ -3,8 +3,8 @@ import { promises, writeFile } from 'fs';
 
 import Bitmap1bpp from '../../src/feature/loaders/Bitmap1bpp';
 // import HexColor, { Colors } from '../../src/feature/loaders/utils/HexColor';
-import { readBitmapFile } from '../../src/tools/bitmap';
-import decimalToBinary from '../../src/core/decimalToBinary';
+// import { readBitmapFile } from '../../src/tools/bitmap';
+// import decimalToBinary from '../../src/core/decimalToBinary';
 import EncodeOutput from '../../src/feature/loaders/utils/EncodeOutput';
 
 // {

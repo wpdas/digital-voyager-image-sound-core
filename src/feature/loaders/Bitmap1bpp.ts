@@ -15,12 +15,35 @@ import asciiToBits from 'core/asciiToBits';
 import readBitsChunk from 'core/readBitsChunk';
 import binaryToDecimal from 'core/binaryToDecimal';
 import bitsToAscii from 'core/bitsToAscii';
+import checkTypeId from 'core/checkTypeId';
 
 class Bitmap1bpp implements ILoader<Buffer> {
   public header: Header = new Header(loadersTypesId.BITMAP_1BPP);
 
+  /**
+   * Bitmap1bpp Loader - encoder and decoder. This loader handle with bitmap that holds
+   * 1 bit per pixel. Images that are generated with only two colors. There is a usefull
+   * method that can help you creating a bitmap buffer and then save it as a file, it is
+   * `createBitmapBuffer(...)` method.
+   *
+   * The header is storing one parameter:
+   * typeId: 8 bits
+   * width: 16 bits
+   * height: 16 bits
+   * color1: 48 bits
+   * color2: 48 bits
+   * imageBits: infinity (the rest of bits)
+   */
   constructor() {}
 
+  /**
+   * Create a bitmap buffer. You can save it as a file then.
+   * @param imageBits Image bits. 0 = one pixel colored with color 1; 1 = one pixel colored with color 2
+   * @param width The image width
+   * @param height The image height
+   * @param color1 Hex color that represents bit 0. e.g.: new HexColor('#FF00FF'); The `Color` module can be usefull.
+   * @param color2 Hex color that represents bit 1. e.g.: new HexColor('#FF00FF'); The `Color` module can be usefull.
+   */
   createBitmapBuffer(
     imageBits: string,
     width: number,
@@ -62,6 +85,10 @@ class Bitmap1bpp implements ILoader<Buffer> {
     });
   }
 
+  /**
+   * Get Bitmap 1 bit per pixel format and generates the bits to be stored on audio.
+   * @param imageBuffer Bitmap 1 bit per pixel buffer
+   */
   encode(imageBuffer: Buffer): EncodeOutput {
     let output = '';
     const bmpData = readBitmapDataFromBuffer(imageBuffer);
@@ -99,61 +126,72 @@ class Bitmap1bpp implements ILoader<Buffer> {
     return new EncodeOutput(this.header, output);
   }
 
+  /**
+   * Decodes the Bitmap information and return a Bitmap 1 bit per pixel buffer
+   * @param bitsSequence Bits
+   */
   decode(bitsSequence: string) {
+    // Check typeId
+    const typeIdCheck = checkTypeId(
+      bitsSequence,
+      this.header.getHeaderTypeId()
+    );
+    if (typeIdCheck !== null && typeIdCheck === false) {
+      throw new Error('This is not a audio file containing Bitmap1bpp bits.');
+    }
+
     const additionalHeaderBits = 128;
     const headerBitsSize = TYPE_ID_BITS_SIZE + additionalHeaderBits;
     let output: Buffer;
 
-    let widthBits: number; // 16 bits
-    let heightBits: number; // 16 bits
-    let colorOneBits: HexColor; // 48 Bits
-    let colorTwoBits: HexColor; // 48 Bits
+    let width: number; // 16 bits
+    let height: number; // 16 bits
+    let color1: HexColor; // 48 Bits
+    let color2: HexColor; // 48 Bits
     let imageBits: string; // Rest of Bits
-
-    // (!) Adicionar um verificador de typeId em cada loader
 
     // Read after have enough bits loaded to read the header bits
     if (bitsSequence.length >= headerBitsSize) {
-      widthBits = binaryToDecimal(
+      width = binaryToDecimal(
         readBitsChunk(bitsSequence, 16, TYPE_ID_BITS_SIZE)
       );
-      heightBits = binaryToDecimal(
+      height = binaryToDecimal(
         readBitsChunk(bitsSequence, 16, TYPE_ID_BITS_SIZE + 16)
       );
 
-      colorOneBits = new HexColor(
+      color1 = new HexColor(
         '#' +
           bitsToAscii(readBitsChunk(bitsSequence, 48, TYPE_ID_BITS_SIZE + 32))
       );
-      colorTwoBits = new HexColor(
+      color2 = new HexColor(
         '#' +
           bitsToAscii(readBitsChunk(bitsSequence, 48, TYPE_ID_BITS_SIZE + 80))
       );
       imageBits = readBitsChunk(bitsSequence, null, TYPE_ID_BITS_SIZE + 128);
 
       const colorTable: Buffer = Buffer.from([
-        colorOneBits.BLUE,
-        colorOneBits.GREEN,
-        colorOneBits.RED,
+        color1.BLUE,
+        color1.GREEN,
+        color1.RED,
         0x00,
-        colorTwoBits.BLUE,
-        colorTwoBits.GREEN,
-        colorTwoBits.RED,
+        color2.BLUE,
+        color2.GREEN,
+        color2.RED,
         0x00,
       ]);
 
       const imageData = padImageData({
         unpaddedImageData: Buffer.from(
-          sliceTextInChunks(imageBits, widthBits, '0b')
+          sliceTextInChunks(imageBits, width, '0b')
         ),
-        width: widthBits,
-        height: heightBits,
+        width: width,
+        height: height,
       });
 
       output = createBitmapBuffer({
         imageData,
-        width: widthBits,
-        height: heightBits,
+        width: width,
+        height: height,
         bitsPerPixel: 1,
         colorTable,
       });
