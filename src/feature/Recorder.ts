@@ -37,16 +37,26 @@ class Recorder implements IRecorder {
    * Must be a multiple of 8 (8 bits)
    *
    * @param {string} bits write bits (8 bits)
+   * @param autoFix Auto fix bits by adding the rest necessary at the end (may corrupt the content)
    */
-  writeBits = (bits: string) => {
-    const cleanedBits = bits.replace(/[^0-1]/g, '');
+  writeBits = (bits: string, autoFix: boolean = false) => {
+    let cleanedBits = bits.replace(/[^0-1]/g, '');
+
+    // Fix bits (may cause issue to the content)
+    if (autoFix === true) {
+      cleanedBits += Array(
+        DEFAULT_BITS_DEPTH - (cleanedBits.length % DEFAULT_BITS_DEPTH)
+      )
+        .fill('0')
+        .join('');
+    }
 
     // Must be a multiple of 8 (8 bits)
     if (cleanedBits.length % DEFAULT_BITS_DEPTH === 0) {
       bitToTone(this.writer, cleanedBits);
     } else {
       throw new Error(
-        'Invalid bits format. You must pass multiple of 8 bits (byte). Example: 00011010 or 0001101000011011...'
+        'Invalid bits format. You must pass multiple of 8 bits (byte). Example: 00011010 or 0001101000011011... You can set autoFix as true and have this fixed.'
       );
     }
   };

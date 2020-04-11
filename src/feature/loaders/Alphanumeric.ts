@@ -1,4 +1,6 @@
+import ILoader from './ILoader';
 import Header from './utils/Header';
+import EncodeOutput from './utils/EncodeOutput';
 import loadersTypesId from 'loadersTypesId';
 import sliceTextInChunks from 'core/sliceTextInChunks';
 import forceBitsSize from 'core/forceBitsSize';
@@ -7,12 +9,14 @@ import decimalToBinary from 'core/decimalToBinary';
 import binaryToDecimal from 'core/binaryToDecimal';
 import { DEFAULT_BITS_DEPTH, TYPE_ID_BITS_SIZE } from '../../constants';
 
-class Alphanumeric {
-  // Define the Header of this loader
+class Alphanumeric implements ILoader<string> {
   public header: Header = new Header(loadersTypesId.ALPHANUMERIC);
 
   /**
-   * Alphanumeric Loader - encoder and decoder
+   * Alphanumeric Loader - encoder and decoder. You can use it for handle with
+   * global alphanumeric characters. If you'll use only ascii characters, use
+   * the ASCIIText Loader instead. By doing this, you will reduce more than
+   * 50% (size and time) of the final file size.
    *
    * The header is storing two parameters:
    * typeId: 8 bits
@@ -44,16 +48,14 @@ class Alphanumeric {
   }
 
   /**
-   * Converts global alphanumeric characters content to bits (multiple of 6 bits).
+   * Converts global alphanumeric characters content to bits.
    *
-   * This was created to support almost all characters format. Can becemoe heavy if using
+   * This was created to support almost all characters format. Can become heavy if using
    * characters different of ASCII format.
    *
-   * Example of usage:
-   * Alphanumeric.encode('<3'); Returns "111100110011"
    * @param text  Any alphanumeric content
    */
-  public encode(text: string) {
+  public encode(text: string): EncodeOutput {
     const biggerCharInBits = this.getBiggerCharInBits(text);
 
     // Set the bitsPerChar (8 bits) parameter on Header
@@ -66,7 +68,8 @@ class Alphanumeric {
         biggerCharInBits
       );
     }
-    return this.header.getHeaderBits() + output;
+
+    return new EncodeOutput(this.header, output);
   }
 
   /**
@@ -83,6 +86,7 @@ class Alphanumeric {
         readBitsChunk(bitsSquence, TYPE_ID_BITS_SIZE, DEFAULT_BITS_DEPTH)
       );
 
+      // Get only data bits without header information
       const bitsWithoutHeader = bitsSquence.slice(
         TYPE_ID_BITS_SIZE + DEFAULT_BITS_DEPTH
       );

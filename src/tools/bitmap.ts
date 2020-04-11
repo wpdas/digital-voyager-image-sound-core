@@ -36,6 +36,14 @@ interface ICreateBitmapFile {
   colorTable: Buffer;
 }
 
+interface ICreateBitmapBuffer {
+  imageData: Buffer;
+  width: number;
+  height: number;
+  bitsPerPixel: number;
+  colorTable: Buffer;
+}
+
 interface IHeader {
   headerLength: number;
   headerType: string | undefined;
@@ -117,6 +125,7 @@ export const dibHeader = ({
   return buffer;
 };
 
+// File mode
 export const createBitmapFile = ({
   filename,
   imageData,
@@ -126,31 +135,50 @@ export const createBitmapFile = ({
   colorTable = Buffer.alloc(0),
 }: ICreateBitmapFile) => {
   return new Promise((resolve, reject) => {
-    const imageDataOffset = 54 + colorTable.length;
-    const filesize = imageDataOffset + imageData.length;
-    let fileContent = Buffer.alloc(filesize);
-    let fileHeader = bitmapFileHeader({
-      filesize,
-      imageDataOffset,
-    });
-    fileHeader.copy(fileContent);
-    dibHeader({
+    let fileContent = createBitmapBuffer({
+      imageData,
       width,
       height,
       bitsPerPixel,
-      bitmapDataSize: imageData.length,
-      numberOfColorsInPalette: colorTable.length / 4,
-    }).copy(fileContent, 14);
-
-    colorTable.copy(fileContent, 54);
-
-    imageData.copy(fileContent, imageDataOffset);
+      colorTable,
+    });
 
     writeFile(filename, fileContent, (err) => {
       if (err) return reject(err);
       resolve();
     });
   });
+};
+
+// Buffer mode
+export const createBitmapBuffer = ({
+  imageData,
+  width,
+  height,
+  bitsPerPixel,
+  colorTable = Buffer.alloc(0),
+}: ICreateBitmapBuffer) => {
+  const imageDataOffset = 54 + colorTable.length;
+  const filesize = imageDataOffset + imageData.length;
+  let fileContent = Buffer.alloc(filesize);
+  let fileHeader = bitmapFileHeader({
+    filesize,
+    imageDataOffset,
+  });
+  fileHeader.copy(fileContent);
+  dibHeader({
+    width,
+    height,
+    bitsPerPixel,
+    bitmapDataSize: imageData.length,
+    numberOfColorsInPalette: colorTable.length / 4,
+  }).copy(fileContent, 14);
+
+  colorTable.copy(fileContent, 54);
+
+  imageData.copy(fileContent, imageDataOffset);
+
+  return fileContent;
 };
 
 export const readBitmapFileHeader = (filedata: Buffer) => {
@@ -225,4 +253,24 @@ export const readBitmapFile = (file: string) => {
       });
     });
   });
+};
+
+/**
+ * Return the BMP info data
+ * @param buffer Bitmap buffer
+ */
+export const readBitmapDataFromBuffer = (buffer: Buffer) => {
+  const fileHeader = readBitmapFileHeader(buffer);
+  const dibHeader = readDibHeader(buffer);
+  const imageDataLength = dibHeader.bitmapDataSize;
+  const imageDataOffset = fileHeader.imageDataOffset;
+  const imageData = Buffer.alloc(imageDataLength);
+  const colorTable = readColorTable(buffer);
+  buffer.copy(imageData, 0, imageDataOffset);
+  return {
+    fileHeader,
+    dibHeader,
+    imageData,
+    colorTable,
+  };
 };

@@ -1009,6 +1009,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/bmp-js@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@types/bmp-js/-/bmp-js-0.1.0.tgz#301afe2bb3ac7ef0f18465966e4166f0491b3332"
+  integrity sha512-uMU85ROcmlY1f4mVPTlNodRXa6Z5f0AIxvv5b0pvjty3KNg7ljf5lNSspHgaF6iFDCiGpLQmJna+VwEpUC9TyA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -1312,6 +1319,11 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
+
+bmp-js@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/bmp-js/-/bmp-js-0.1.0.tgz#e05a63f796a6c1ff25f4771ec7adadc148c07233"
+  integrity sha1-4Fpj95amwf8l9Hcex62twUjAcjM=
 
 brace-expansion@^1.1.7:
   version "1.1.11"

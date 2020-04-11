@@ -17,3 +17,7 @@ export const decimalNumber29Wav = {
   bits: '0000000000011101',
   wavFile: path.join(__dirname, 'decimalNumber29.wav'),
 };
+
+export const smileyBmp = {
+  bmpFile: path.join(__dirname, 'smiley.bmp'),
+};
