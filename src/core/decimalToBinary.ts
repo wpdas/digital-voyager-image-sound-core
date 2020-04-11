@@ -14,7 +14,7 @@
 const decimalToBinary = (numberValue: number, bitsDepth?: number) => {
   const bits = numberValue.toString(2);
   const currentBitsSize = bits.length;
-  let nullBits: string;
+  let nullBits: string = '';
 
   // Limits the amount of bits
   if (bitsDepth != null) {

@@ -56,7 +56,7 @@ class Reader implements IReader {
       bits = bits.slice(issuedBits);
     }
 
-    return bits;
+    return bits as string;
   };
 
   /**

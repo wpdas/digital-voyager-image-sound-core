@@ -1,7 +1,7 @@
 /**
  * Reads chunk of bits from a sequence of bits.
  * @param bits Bits to be read
- * @param length The number of bits to read.
+ * @param length The number of bits to read. Will read til the end if null
  * @param position The offset from the beginning of the bits from which data should be read. If `null`, data will be read from the current position.
  */
 const readBitsChunk = (

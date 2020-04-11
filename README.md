@@ -71,3 +71,5 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Usar [TypeDoc](https://typedoc.org/) para gerar documentação?
 - Trocar os recursos deprecados do Buffer pelos recomendados e mais seguros.
 - Mover BitToneBuffer.ts e bitmap.ts para a pasta core;
+- Pixel Art online app;
+- Gerar bits de qualquer arquivo: https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
