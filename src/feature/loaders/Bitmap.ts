@@ -14,7 +14,7 @@ import checkTypeId from 'core/checkTypeId';
 import fixBits from 'core/fixBits';
 
 class Bitmap implements ILoader<Buffer> {
-  public header: Header = new Header(loadersTypesId.BITMAP_1BPP);
+  public header: Header = new Header(loadersTypesId.BITMAP);
 
   /**
    * Bitmap Loader - encoder and decoder. This loader handle with bitmap that holds
