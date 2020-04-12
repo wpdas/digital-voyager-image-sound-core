@@ -73,3 +73,7 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Mover BitToneBuffer.ts e bitmap.ts para a pasta core;
 - Pixel Art online app;
 - Gerar bits de qualquer arquivo: https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
+
+## Util
+
+- Gerar BMP: https://online-converting.com/image/convert2bmp/#
