@@ -3,23 +3,23 @@ import ILoader from './ILoader';
 import Header from './utils/Header';
 import loadersTypesId from 'loadersTypesId';
 import EncodeOutput from './utils/EncodeOutput';
-import { createBitmapBuffer, padImageData } from 'tools/bitmap';
-import HexColor from './utils/HexColor';
-import { TYPE_ID_BITS_SIZE, DEFAULT_BITS_DEPTH } from '../../constants';
+import { TYPE_ID_BITS_SIZE } from '../../constants';
 import sliceTextInChunks from 'core/sliceTextInChunks';
 import decimalToBinary from 'core/decimalToBinary';
 import readBitsChunk from 'core/readBitsChunk';
 import binaryToDecimal from 'core/binaryToDecimal';
 import checkTypeId from 'core/checkTypeId';
-import fixBits from 'core/fixBits';
+import hexToBpp from 'core/hexToBpp';
+import bppToHex from 'core/bppToHex';
 
-class Bitmap implements ILoader<Buffer> {
-  public header: Header = new Header(loadersTypesId.BITMAP);
+class Bitmap4bitspp implements ILoader<Buffer> {
+  private BPP = 4;
+  public header: Header = new Header(loadersTypesId.BITMAP_4BITS_PP);
 
   /**
-   * Bitmap Loader - encoder and decoder. There is a usefull
-   * method that can help you creating a bitmap buffer and then save it as a file, it is
-   * `createBitmapBuffer(...)` method.
+   * Bitmap4bytepp Loader - encoder and decoder. This will take only 1 byte of color and
+   * generate a bitmap with 24 bytes containing the gray factor. The encoded
+   * data will store only 1 byte per pixel.
    *
    * The header is storing one parameter:
    * typeId: 8 bits
@@ -30,58 +30,10 @@ class Bitmap implements ILoader<Buffer> {
   constructor() {}
 
   /**
-   * Create a bitmap buffer. You can save it as a file then.
-   * @param imageBits Image bits. 0 = one pixel colored with color 1; 1 = one pixel colored with color 2
-   * @param width The image width
-   * @param height The image height
-   * @param color1 Hex color that represents bit 0. e.g.: new HexColor('#FF00FF'); The `Color` module can be usefull.
-   * @param color2 Hex color that represents bit 1. e.g.: new HexColor('#FF00FF'); The `Color` module can be usefull.
-   */
-  createBitmapBuffer(
-    imageBits: string,
-    width: number,
-    height: number,
-    color1: HexColor,
-    color2: HexColor
-  ): Buffer {
-    if (imageBits.length < width * height) {
-      throw new Error(
-        `Image bits are not enough to fill all the pixels. You must provide enough bits to fill the ${
-          width * height
-        } pixels.`
-      );
-    }
-
-    const colorTable: Buffer = Buffer.from([
-      color1.BLUE,
-      color1.GREEN,
-      color1.RED,
-      0x00,
-      color2.BLUE,
-      color2.GREEN,
-      color2.RED,
-      0x00,
-    ]);
-
-    const imageData = padImageData({
-      unpaddedImageData: Buffer.from(
-        fixBits(imageBits, width, DEFAULT_BITS_DEPTH, '0b')
-      ),
-      width,
-      height,
-    });
-
-    return createBitmapBuffer({
-      imageData,
-      width,
-      height,
-      bitsPerPixel: 1,
-      colorTable,
-    });
-  }
-
-  /**
-   * Get Bitmap format and generates the bits to be stored on audio.
+   * Get Bitmap 1 bit per pixel format and generates the bits to be stored on audio.
+   *
+   * This will store only 1 byte per pixel
+   *
    * @param imageBuffer Bitmap 1 bit per pixel buffer
    */
   encode(imageBuffer: Buffer): EncodeOutput {
@@ -97,11 +49,12 @@ class Bitmap implements ILoader<Buffer> {
 
     // Convert image data to bits (Buffer)
     const imageData = bmpData.getData();
-    for (let y = 1; y < imageData.length; y++) {
-      // Ignore the QUAD bits
-      if (y % 4 !== 0) {
-        output += decimalToBinary(imageData.readUInt8(y));
-      }
+    // Stores only the red as factor to grey scale
+    for (let y = 3; y < imageData.length; y += 4) {
+      output += decimalToBinary(
+        hexToBpp(imageData.readUInt8(y), this.BPP),
+        this.BPP
+      );
     }
 
     return new EncodeOutput(this.header, output);
@@ -145,19 +98,27 @@ class Bitmap implements ILoader<Buffer> {
       );
 
       // Convert bits to buffer with image data
-      let imageDataBitsArray = sliceTextInChunks(imageBits, 8, '0b');
+      let imageDataBitsArray = sliceTextInChunks(imageBits, this.BPP);
 
-      // Add the QUAD bits
-      const imageDataWithQuad: string[] = [];
+      // Add the QUAD bits and BLUE, GREEN and RED as the factor saved on the encode
+      const imageDataWithQBGR: number[] = [];
       for (let y = 0; y < imageDataBitsArray.length; y++) {
-        if (y % 3 === 0) {
-          imageDataWithQuad.push('0b00000000');
-        }
-        imageDataWithQuad.push(imageDataBitsArray[y]);
+        // The fusion of these data will generate gray scale according
+        // to the factor registered on imageDataBitsArray[y]
+        const color = bppToHex(
+          binaryToDecimal(imageDataBitsArray[y]),
+          this.BPP
+        );
+        imageDataWithQBGR.push(
+          0, // QUAD
+          color, // BLUE
+          color, // GREEN
+          color // RED
+        );
       }
 
       const bmpData = {
-        data: Buffer.from(imageDataWithQuad),
+        data: Buffer.from(imageDataWithQBGR),
         width,
         height,
       };
@@ -173,4 +134,4 @@ class Bitmap implements ILoader<Buffer> {
   }
 }
 
-export default Bitmap;
+export default Bitmap4bitspp;
