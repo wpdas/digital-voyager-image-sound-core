@@ -1,5 +1,8 @@
-import Recorder from 'feature/Recorder';
-import Reader from 'feature/Reader';
-import DecodedChunks from 'feature/DecodedChunks';
+import DecodedChunks from './DecodedChunks';
+import Reader from './Reader';
+import Recorder from './Recorder';
 
-export { Recorder, Reader, DecodedChunks };
+/**
+ * Main resources
+ */
+export { DecodedChunks, Reader, Recorder };

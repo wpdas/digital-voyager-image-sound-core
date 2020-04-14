@@ -3,7 +3,10 @@
     "target": "esnext",
     "module": "esnext",
     "outDir": "lib",
-    "baseUrl": "src",
+    "baseUrl": "./src",
+    "paths": {
+      "@voyager-edsound/*": ["*"]
+    },
     "declaration": true,
     "esModuleInterop": true,
     "lib": ["esnext"],
@@ -20,6 +23,6 @@
 
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "test/**/*.test.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

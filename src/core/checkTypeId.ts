@@ -1,4 +1,4 @@
-import { TYPE_ID_BITS_SIZE } from '../constants';
+import { TYPE_ID_BITS_SIZE } from '@voyager-edsound/constants';
 import binaryToDecimal from './binaryToDecimal';
 
 /**

@@ -1,6 +1,6 @@
 import sliceTextInChunks from './sliceTextInChunks';
 import forceBitsSize from './forceBitsSize';
-import { DEFAULT_BITS_DEPTH } from '../constants';
+import { DEFAULT_BITS_DEPTH } from '@voyager-edsound/constants';
 
 /**
  * Slices string and returns a new array with the fixed bits chunks.
