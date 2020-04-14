@@ -70,9 +70,12 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Capacidade para ler outros formatos de arquivos de áudio e extrair os bits, exemplo: mp3, ogg, etc.
 - Usar [TypeDoc](https://typedoc.org/) para gerar documentação?
 - Trocar os recursos deprecados do Buffer pelos recomendados e mais seguros.
-- Mover BitToneBuffer.ts e bitmap.ts para a pasta core;
-- Pixel Art online app;
-- Gerar bits de qualquer arquivo: https://riptutorial.com/javascript/example/14207/getting-binary-representation-of-an-image-file
+- Trocar o deprecatedBuffer.ts pelo mais novo e não deprecado;
+- Criar PR contendo os arquivos d.ts para wav-encoder e wav-decoder?;
+- Melhorar os loaders de Bitmap para gerar bmp usando apenas os bits de cores e nao utilizar os nulos. Todos eles estão gerando arquivos com o mesmo tamanho mesmo que eles tenham menos dados de cor.
+- Testar arquivos com 384000Hz [o mesmo do disco da voyager] ao invéz de 44100Hz (amostras por segundo);
+- Estudar como gerar a lib só quando necessário (porque o código vai para o repo sem a lib contendo apenas o TypeScript).
+- Escolher a licença apropriada.
 
 ## Util
 

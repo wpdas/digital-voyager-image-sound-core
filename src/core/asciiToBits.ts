@@ -1,4 +1,4 @@
-import { DEFAULT_BITS_DEPTH } from '../constants';
+import { DEFAULT_BITS_DEPTH } from '@voyager-edsound/constants';
 
 /**
  * Converts ASCII-UTF8 text to bits
