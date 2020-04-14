@@ -75,7 +75,9 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Melhorar os loaders de Bitmap para gerar bmp usando apenas os bits de cores e nao utilizar os nulos. Todos eles estão gerando arquivos com o mesmo tamanho mesmo que eles tenham menos dados de cor.
 - Testar arquivos com 384000Hz [o mesmo do disco da voyager] ao invéz de 44100Hz (amostras por segundo);
 - Estudar como gerar a lib só quando necessário (porque o código vai para o repo sem a lib contendo apenas o TypeScript).
+- Configurar o binário (relacionado ao tópico acima).
 - Escolher a licença apropriada.
+- Postar os dados do algorítmo que está na cardeneta (o mesmo que já está sendo usado no projeto mas mais detalhado).
 
 ## Util
 
