@@ -28,8 +28,10 @@ class Bitmap implements ILoader<Buffer> {
   constructor() {}
 
   /**
-   * Get Bitmap format and generates the bits to be stored on audio.
-   * @param imageBuffer Bitmap 1 bit per pixel buffer
+   * Get a 24 bits bitmap and converts it to 24 bits per pixel (RGB color, ignoring alpha)
+   * format and generates the bits to be stored on audio.
+   *
+   * @param imageBuffer 24 bits Bitmap buffer
    */
   encode(imageBuffer: Buffer): EncodedOutput {
     let output = '';
@@ -55,7 +57,8 @@ class Bitmap implements ILoader<Buffer> {
   }
 
   /**
-   * Decodes the Bitmap information and return a Bitmap 1 bit per pixel buffer
+   * Decodes the Bitmap information and return a Bitmap 24 bits per pixel buffer (RGB color).
+   * However, the final decoded file will be a 24 Bitmap file.
    * @param bitsSequence Bits
    */
   decode(bitsSequence: string) {
