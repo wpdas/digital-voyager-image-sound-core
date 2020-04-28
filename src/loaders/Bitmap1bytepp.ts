@@ -28,11 +28,10 @@ class Bitmap1bytepp implements ILoader<Buffer> {
   constructor() {}
 
   /**
-   * Get Bitmap 1 bit per pixel format and generates the bits to be stored on audio.
+   * Get a 24 bits bitmap and converts its to 1 bit per pixel (100% black or 100% white) format and
+   * generates the bits to be stored on audio.
    *
-   * This will store only 1 byte per pixel
-   *
-   * @param imageBuffer Bitmap 1 bit per pixel buffer
+   * @param imageBuffer 24 bits Bitmap buffer
    */
   encode(imageBuffer: Buffer): EncodedOutput {
     let output = '';
@@ -56,7 +55,8 @@ class Bitmap1bytepp implements ILoader<Buffer> {
   }
 
   /**
-   * Decodes the Bitmap information and return a Bitmap 1 bit per pixel buffer
+   * Decodes the Bitmap information and return a Bitmap 1 bit per pixel buffer (100% black or 100% white).
+   * However, the final decoded file will be a 24 Bitmap file.
    * @param bitsSequence Bits
    */
   decode(bitsSequence: string) {

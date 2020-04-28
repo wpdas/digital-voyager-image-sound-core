@@ -65,7 +65,7 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 
 ## Roadmap
 
-- Capacidade de ler bites em tempo real. Enquanto o audio está sendo tocado.
+- Capacidade de ler bites em tempo real. Enquanto o audio está sendo tocado. (https://www.npmjs.com/package/naudiodon)
 - Recorder deve passar um Loader type no segundo parametro? Ou continuar pedindo apenas o Header type?
 - Capacidade para ler outros formatos de arquivos de áudio e extrair os bits, exemplo: mp3, ogg, etc.
 - Usar [TypeDoc](https://typedoc.org/) para gerar documentação?
@@ -78,6 +78,28 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 - Configurar o binário (relacionado ao tópico acima).
 - Escolher a licença apropriada.
 - Postar os dados do algorítmo que está na cardeneta (o mesmo que já está sendo usado no projeto mas mais detalhado).
+- Refazer o desenho da capa do disco com as informações para ler o disco:
+
+  - Sobre o hidrogêncio e seu comprimento: https://en.wikipedia.org/wiki/Hydrogen_line
+
+- Sampre rate vai de -1 a 1, ou seja, temos um total de 2 de cumprimento, para se achar o "SampleByte" basta fazer o cálculo
+  2 / 255 (valor total de 1 byte em decimal) que vai dar 0.0078431373;
+
+- Para guardar os valores basta fazer o seguinte cálculo:
+  Ex1: 00011110 (binário) => 30 (decimal) => (SampleByte \* 30) - 1 = -0.764705881 (final SampleRate position); Onde
+  "-1" é o ajuste da posição na largura do sampleRate;
+
+- Para fazer o processo contrário (ler o dado), fazer o seguinte cálculo:
+  Ex1: (-0.764705881 + 1) / SampleByte => 30 (decimal) => 0001110 (binário); Onde o primeiro valor é o sampleRate lido
+  do arquivo de audio e o "+1" é o ajuste que define a posição dentro do limite de largura de um sampleRate;
+
+- Criar o metodo de ler e escrever em Stereo (guardar os bits de forma intercalada):
+  dado 01101100
+  processar:
+  ch1:0110
+  ch2:1010
+
+- Os decoders de bitmap estão gerando arquivos
 
 ## Util
 
