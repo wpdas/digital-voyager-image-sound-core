@@ -5,11 +5,13 @@ import deprecatedBuffer from '@voyager-edsound/core/deprecatedBuffer';
 import {
   TYPE_ID_BITS_SIZE,
   DEFAULT_BITS_DEPTH,
+  WAV_HEADER_BYTES_SIZE,
 } from '@voyager-edsound/constants';
 import binaryToDecimal from '@voyager-edsound/core/binaryToDecimal';
 
 interface IReader {
   loadFileHeaderTypeId: (fileDir: string) => Promise<number>;
+  loadBufferHeaderTypeId: (buffer: Buffer) => number;
   getBitsFromFile: (fileDir: string) => Promise<string>;
   getBitsFromBuffer: (buffer: Buffer) => Promise<string>;
   getBitsFromBufferChunks: (buffer: Buffer) => Promise<string>;
@@ -33,6 +35,14 @@ class Reader implements IReader {
   loadFileHeaderTypeId = async (fileDir: string) => {
     const typeIdBits = await readBits(fileDir, TYPE_ID_BITS_SIZE);
     return binaryToDecimal(typeIdBits);
+  };
+
+  /**
+   * Load bits containing the Loader TypeId information. Can be used to know how to decode the information
+   * @param buffer File buffer to have its header loaded
+   */
+  loadBufferHeaderTypeId = (buffer: Buffer) => {
+    return buffer[WAV_HEADER_BYTES_SIZE + 1];
   };
 
   /**

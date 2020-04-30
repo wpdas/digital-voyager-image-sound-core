@@ -19,6 +19,11 @@ export const TYPE_ID_BITS_SIZE = 8;
 export const SAMPLE_BYTE = 0.0078431373;
 
 /**
+ * Audio sample rate
+ */
+export const SAMPLE_RATE = 44100;
+
+/**
  * Loaders types
  */
 export const loadersTypeId = {

@@ -25,7 +25,7 @@ declare module 'wav-decoder' {
   export = WavDecoder;
 }
 
-// wav-decoder
+// wav-encoder
 interface AudioData {
   sampleRate: number;
   channelData: Array<Float32Array>;

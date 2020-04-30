@@ -1,7 +1,7 @@
 import WavEncoder from 'wav-encoder';
 import sliceTextInChunks from './sliceTextInChunks';
 import binaryToDecimal from './binaryToDecimal';
-import { SAMPLE_BYTE } from '@voyager-edsound/constants';
+import { SAMPLE_BYTE, SAMPLE_RATE } from '@voyager-edsound/constants';
 
 export const writeSampleBytes = async (bits: string) => {
   const decimal = sliceTextInChunks(bits, 8).map((binaryData) =>
@@ -11,7 +11,7 @@ export const writeSampleBytes = async (bits: string) => {
     (decimalNumber) => SAMPLE_BYTE * decimalNumber - 1
   );
   const audioData = {
-    sampleRate: 44100,
+    sampleRate: SAMPLE_RATE,
     channelData: [new Float32Array(sampleBytes)],
   };
 
