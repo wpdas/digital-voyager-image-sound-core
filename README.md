@@ -139,7 +139,7 @@ Com essa solução, o moduleo `wav-decoder` pode ser descartado (a não ser que 
 
 **ATENÇÃO: O inverso do processo acima deve ser feito também para gravar os dados usando o Recorder.**
 
-**ATENÇÃO 2:** O core precisará sofrer uma re-estruturação para não fazer conversões para binário representacional. Atualmente estou convertendo os valores para strings de 0s e 1s porque o processo de Gravar e Ler antigo, quando se usava tons, rigistrava o tom de acordo com o valor 0, 1 ou DIVISOR. Este processo de tons foi removido, assim sendo, o processo de se ter o binários em string também deve ser removido. Deve-se guardar os valores diretamente no formato Float32Array de cada Loader e este ser entregue ao Recorder posteriormente. O cálculo do SAMPLE BYTE vai servir apenas como referência de como os valores são convertidos, ele não vai ser mais utilizado.
+**ATENÇÃO 2:** O core precisará sofrer uma re-estruturação para não fazer conversões para binário representacional. Atualmente estou convertendo os valores para strings de 0s e 1s porque o processo de Gravar e Ler antigo, quando se usava tons, rigistrava o tom de acordo com o valor 0, 1 ou DIVISOR. Este processo de tons foi removido, assim sendo, o processo de se ter o binários em string também deve ser removido. Deve-se guardar os valores diretamente no formato Float32Array de cada Loader e este ser entregue ao Recorder posteriormente. O cálculo do SAMPLE BYTE vai servir apenas como referência e escrita de bytes (já que a fórmula para transformar Uint8 em Float32 está causando defeito de entregar o valor - 1)
 
 ## Util
 

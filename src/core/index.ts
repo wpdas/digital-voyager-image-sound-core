@@ -1,40 +1,42 @@
-import asciiToBits from './asciiToBits';
+import asciiToBytes from './asciiToBytes';
 import binaryToDecimal from './binaryToDecimal';
-import bitsToAscii from './bitsToAscii';
+import bytesToAscii from './bytesToAscii';
 import bppToHex from './bppToHex';
 import checkTypeId from './checkTypeId';
 import decimalToBinary from './decimalToBinary';
 import decimalToHex from './decimalToHex';
-import deprecatedBuffer from './deprecatedBuffer';
 import fixBits from './fixBits';
 import forceBitsSize from './forceBitsSize';
 import getBitsFromBuffer from './getBitsFromBuffer';
 import hexToBpp from './hexToBpp';
 import hexToDecimal from './hexToDecimal';
-import readBits from './readBits';
+import readBytes from './readBytes';
 import readBitsChunk from './readBitsChunk';
 import sliceTextInChunks from './sliceTextInChunks';
 import writeSampleBytes from './writeSampleBytes';
+import numberToUint8 from './numberToUint8';
+import uint8ToNumber from './uint8ToNumber';
 
 /**
  * Core
  */
 export {
-  asciiToBits,
+  asciiToBytes,
   binaryToDecimal,
-  bitsToAscii,
+  bytesToAscii,
   bppToHex,
   checkTypeId,
   decimalToBinary,
   decimalToHex,
-  deprecatedBuffer,
   fixBits,
   forceBitsSize,
   getBitsFromBuffer,
   hexToBpp,
   hexToDecimal,
-  readBits,
+  readBytes,
   readBitsChunk,
   sliceTextInChunks,
   writeSampleBytes,
+  numberToUint8,
+  uint8ToNumber,
 };

@@ -11,18 +11,18 @@ const { open } = promises;
  * @param length The number of bits to read.
  * @param position The offset from the beginning of the file from which data should be read. If `null`, data will be read from the current position.
  */
-const readBits = async (
+const readBytes = async (
   file: string | Buffer,
   length: number,
   position: number = 0
 ) => {
   const informationSizeNeeded = WAV_HEADER_BYTES_SIZE + length + position;
   const buffer = Buffer.alloc(informationSizeNeeded);
-  let headerInBits: string;
+  let headerInBits: Uint8Array;
 
   if (isString(file) === true) {
     const fileHandler = await open(file, 'r');
-    return new Promise<string>((resolve) => {
+    return new Promise<Uint8Array>((resolve) => {
       read(
         fileHandler.fd,
         buffer,
@@ -41,4 +41,4 @@ const readBits = async (
   return headerInBits.slice(position, position + length);
 };
 
-export default readBits;
+export default readBytes;

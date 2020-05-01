@@ -10,21 +10,6 @@ declare module 'tonegenerator' {
   export = tone;
 }
 
-// wav-decoder
-interface DecodeReturnProps {
-  numberOfChannels: number;
-  length: number;
-  sampleRate: number;
-  channelData: Array<Float32Array>;
-}
-
-declare module 'wav-decoder' {
-  const WavDecoder: {
-    decode: (buffer: ArrayBuffer) => DecodeReturnProps;
-  };
-  export = WavDecoder;
-}
-
 // wav-encoder
 interface AudioData {
   sampleRate: number;

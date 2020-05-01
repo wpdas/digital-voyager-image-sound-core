@@ -20,7 +20,7 @@ class Bitmap2bitspp implements ILoader<Buffer> {
   /**
    * Bitmap1bytepp Loader - encoder and decoder. This will take only 1 byte of color and
    * generate a bitmap with 24 bytes containing the gray factor. The encoded
-   * data will store only 1 byte per pixel.
+   * data will store only 2 bits per pixel.
    *
    * The header is storing one parameter:
    * typeId: 8 bits
@@ -31,7 +31,7 @@ class Bitmap2bitspp implements ILoader<Buffer> {
   constructor() {}
 
   /**
-   * Get a 24 bits bitmap and converts it to 2 bits per pixel (4 tons of grey)
+   * Get a 24 bits bitmap and converts it to 2 bits per pixel (4 grey tons)
    * format and generates the bits to be stored on audio.
    *
    * @param imageBuffer 24 bits Bitmap buffer

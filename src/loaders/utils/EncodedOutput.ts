@@ -1,26 +1,27 @@
 import Header from './Header';
 
 interface IEncodedOutput {
-  readonly bits: string;
+  readonly bytes: Uint8Array;
 }
 
 class EncodedOutput implements IEncodedOutput {
-  private _bits: string;
+  private finalBytes: Array<number>;
 
   /**
    * Creates an output with the final bits information
    * @param header The Loader Header
-   * @param output The ouput bits
+   * @param byteArray The ouput bits
    */
-  constructor(header: Header, output: string) {
-    this._bits = header.getHeaderBits() + output;
+  constructor(header: Header, byteArray: Array<number>) {
+    this.finalBytes = header.getHeaderBytes().concat(byteArray);
   }
 
   /**
-   * Output bits
+   * Output bytes
    */
-  public get bits(): string {
-    return this._bits;
+  public get bytes(): Uint8Array {
+    const output = new Uint8Array(this.finalBytes);
+    return output;
   }
 }
 

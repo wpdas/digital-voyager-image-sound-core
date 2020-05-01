@@ -7,5 +7,5 @@ import EncodedOutput from './utils/EncodedOutput';
 export default interface ILoader<E> {
   readonly header: Header;
   encode: (input: E, ...rest: any) => EncodedOutput;
-  decode: (bits: string, ...rest: any) => E;
+  decode: (bytes: Uint8Array, ...rest: any) => E;
 }

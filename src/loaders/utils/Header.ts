@@ -1,13 +1,11 @@
-import { decimalToBinary, binaryToDecimal } from '@voyager-edsound/core';
-
 interface IHeader {
-  readonly getHeaderBits: () => string;
+  readonly getHeaderBytes: () => Array<number>;
   readonly getHeaderTypeId: () => number;
 }
 
 class Header implements IHeader {
-  private typeId: string;
-  private additionalParams: string = '';
+  private typeId: number;
+  private additionalParams: Array<number> = [];
 
   /**
    * Create the Header content
@@ -15,48 +13,35 @@ class Header implements IHeader {
    * will be able to know how to handle with the bits. This is the most basic
    * information needed. More can be passed using the additional parameter.
    * @param {Array<string>} additionalParams Pass addional header parameters to be stored.
-   * This can be used to store data like width, height, etc. Must be multiple of 8 bits.
+   * This can be used to store data like width, height, etc.
    */
-  constructor(typeId: number, additionalParams?: Array<string>) {
-    this.typeId = decimalToBinary(typeId, 8);
-
-    // Check if there are additional params and if they are multiple of 8 bits.
+  constructor(typeId: number, additionalParams?: Array<number>) {
+    this.typeId = typeId;
     if (additionalParams != null) {
-      const isValid = additionalParams.reduce((_, current) => {
-        return current.length === 8;
-      }, true);
-
-      if (isValid) {
-        this.additionalParams.concat(additionalParams.join());
-      }
+      this.additionalParams.concat(additionalParams);
     }
   }
 
   /**
-   * Get the Header bits
+   * Get the Header bytes
    */
-  getHeaderBits = () => {
-    return this.typeId + this.additionalParams;
+  getHeaderBytes = () => {
+    const headerBytes = [this.typeId];
+    return headerBytes.concat(this.additionalParams);
   };
 
   /**
    * Get typeId data from Header.
    * @return typeId data in decimal number format. e.g.: 29
    */
-  getHeaderTypeId = () => binaryToDecimal(this.typeId);
+  getHeaderTypeId = () => this.typeId;
 
   /**
-   * Add bits to the header
-   * @param bits Bits to be stored on Header as a additional parameter. Must be a multiple of 8 bits
+   * Add bytes to the header
+   * @param Bytes Bytes to be stored on Header as a additional parameter. Must be a multiple of 8 bits
    */
-  addBits = (bits: string) => {
-    if (bits.length % 8 === 0) {
-      this.additionalParams += bits;
-    } else {
-      throw new Error(
-        'Invalid bits format. You must pass multiple of 8 bits (byte). Example: 00011010 or 0001101000011011...'
-      );
-    }
+  addBytes = (bytes: Array<number>) => {
+    this.additionalParams = this.additionalParams.concat(bytes);
   };
 }
 

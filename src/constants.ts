@@ -14,6 +14,11 @@ export const WAV_HEADER_BYTES_SIZE = 44;
 export const TYPE_ID_BITS_SIZE = 8;
 
 /**
+ * Typeid uses 1 byte of information
+ */
+export const TYPE_ID_BYTE_SIZE = 1;
+
+/**
  * Unitary value for one SampleByte (Algorithm)
  */
 export const SAMPLE_BYTE = 0.0078431373;
@@ -28,10 +33,9 @@ export const SAMPLE_RATE = 44100;
  */
 export const loadersTypeId = {
   DECIMAL_NUMBER: 0,
-  ALPHANUMERIC: 1,
-  ASCII_TEXT: 2,
-  BITMAP: 3,
-  BITMAP_1BYTE_PP: 4,
-  BITMAP_2BITS_PP: 5,
-  BITMAP_4BITS_PP: 6,
+  ASCII_TEXT: 1,
+  BITMAP: 2,
+  BITMAP_1BYTE_PP: 3,
+  BITMAP_2BITS_PP: 4,
+  BITMAP_4BITS_PP: 5,
 };
