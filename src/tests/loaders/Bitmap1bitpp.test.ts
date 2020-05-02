@@ -1,5 +1,5 @@
 import { promises } from 'fs';
-import Bitmap4bitspp from '@voyager-edsound/loaders/Bitmap4bitspp';
+import Bitmap1bitpp from '@voyager-edsound/loaders/Bitmap1bitpp';
 import Recorder from '@voyager-edsound/Recorder';
 import Reader from '@voyager-edsound/Reader';
 
@@ -8,9 +8,9 @@ import {
   deleteFilesAfterTest,
 } from '@voyager-edsound/tests/mocks';
 
-describe('Bitmap4bitspp', () => {
+describe('Bitmap1bitpp', () => {
   test('Encode and decode', async (done) => {
-    const loader: Bitmap4bitspp = new Bitmap4bitspp();
+    const loader: Bitmap1bitpp = new Bitmap1bitpp();
     const bmpBuffer: Buffer = await promises.readFile(
       calibrationCircleBmp.bmpFile
     );
@@ -25,32 +25,32 @@ describe('Bitmap4bitspp', () => {
     const recorder: Recorder = new Recorder();
     const reader: Reader = new Reader();
 
-    const loader: Bitmap4bitspp = new Bitmap4bitspp();
+    const loader: Bitmap1bitpp = new Bitmap1bitpp();
     const bmpBuffer = await promises.readFile(calibrationCircleBmp.bmpFile);
     const bEncoded = loader.encode(bmpBuffer);
 
     recorder.writeBytes(bEncoded);
     await recorder.endWithFile(
-      calibrationCircleBmp.bmpFile + 'bitmap4bitspp.wav'
+      calibrationCircleBmp.bmpFile + 'bitmap1bitpp.wav'
     );
 
     // Read bits from wav file, decode it and...
-    const fileBytes = await reader.getBytesFromFile(
-      calibrationCircleBmp.bmpFile + 'bitmap4bitspp.wav'
+    const fileBits = await reader.getBytesFromFile(
+      calibrationCircleBmp.bmpFile + 'bitmap1bitpp.wav'
     );
-    const decodedBuffer = loader.decode(fileBytes);
+    const decodedBuffer = loader.decode(fileBits);
     // ... save the buffer as Bmp file
     await promises.writeFile(
-      calibrationCircleBmp.bmpFile + 'bitmap4bitspp.bmp',
+      calibrationCircleBmp.bmpFile + 'bitmap1bitpp.bmp',
       decodedBuffer
     );
     // Delete generated wav
     if (deleteFilesAfterTest) {
-      await promises.unlink(calibrationCircleBmp.bmpFile + 'bitmap4bitspp.wav');
+      await promises.unlink(calibrationCircleBmp.bmpFile + 'bitmap1bitpp.wav');
       // Delete generated bmp at the end of the process
-      await promises.unlink(calibrationCircleBmp.bmpFile + 'bitmap4bitspp.bmp');
+      await promises.unlink(calibrationCircleBmp.bmpFile + 'bitmap1bitpp.bmp');
     }
-    expect(bEncoded.bytes.length).toBe(fileBytes.length);
+    expect(bEncoded.bytes.length).toBe(fileBits.length);
     done();
   });
 });

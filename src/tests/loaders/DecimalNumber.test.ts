@@ -5,6 +5,7 @@ import DecimalNumber from '@voyager-edsound/loaders/DecimalNumber';
 import Recorder from '@voyager-edsound/Recorder';
 import Reader from '@voyager-edsound/Reader';
 import EncodedOutput from '@voyager-edsound/loaders/utils/EncodedOutput';
+import { deleteFilesAfterTest } from '../mocks';
 
 describe('DecimalNumber', () => {
   test('Encode and Decode', () => {
@@ -37,7 +38,9 @@ describe('DecimalNumber', () => {
     expect(decodedMessage).toBe(valueTest);
 
     // Delete file
-    await promises.unlink(outputFile);
+    if (deleteFilesAfterTest) {
+      await promises.unlink(outputFile);
+    }
     done();
   });
 });

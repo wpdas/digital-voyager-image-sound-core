@@ -16,6 +16,8 @@ import sliceTextInChunks from './sliceTextInChunks';
 import writeSampleBytes from './writeSampleBytes';
 import numberToUint8 from './numberToUint8';
 import uint8ToNumber from './uint8ToNumber';
+import encodeBitmapPerPixel from './encodeBitmapPerPixel';
+import decodeBitmapPerPixel from './decodeBitmapPerPixel';
 
 /**
  * Core
@@ -39,4 +41,6 @@ export {
   writeSampleBytes,
   numberToUint8,
   uint8ToNumber,
+  encodeBitmapPerPixel,
+  decodeBitmapPerPixel,
 };

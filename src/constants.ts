@@ -26,7 +26,7 @@ export const SAMPLE_BYTE = 0.0078431373;
 /**
  * Audio sample rate
  */
-export const SAMPLE_RATE = 44100;
+export const SAMPLE_RATE = 44100; // 384000 Voyager Disc
 
 /**
  * Loaders types
@@ -35,7 +35,8 @@ export const loadersTypeId = {
   DECIMAL_NUMBER: 0,
   ASCII_TEXT: 1,
   BITMAP: 2,
-  BITMAP_1BYTE_PP: 3,
+  BITMAP_1BIT_PP: 3,
   BITMAP_2BITS_PP: 4,
   BITMAP_4BITS_PP: 5,
+  BITMAP_8BITS_PP: 6,
 };

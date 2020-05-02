@@ -5,8 +5,8 @@ import { simpleFile, decimalNumber29Wav } from '@voyager-edsound/tests/mocks';
 describe('Reader', () => {
   test('Read icon bits stored in audio frequency', async (done) => {
     const reader: Reader = new Reader();
-    const bits = await reader.getBitsFromFile(simpleFile.wavFile);
-    expect(bits).toBe(simpleFile.bits);
+    const bits = await reader.getBytesFromFile(simpleFile.wavFile);
+    expect(bits.join('')).toBe(simpleFile.bytes.join(''));
     done();
   });
 

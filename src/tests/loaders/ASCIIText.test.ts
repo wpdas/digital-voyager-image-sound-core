@@ -5,6 +5,7 @@ import Recorder from '@voyager-edsound/Recorder';
 import Reader from '@voyager-edsound/Reader';
 import ASCIIText from '@voyager-edsound/loaders/ASCIIText';
 import EncodedOutput from '@voyager-edsound/loaders/utils/EncodedOutput';
+import { deleteFilesAfterTest } from '../mocks';
 
 describe('ASCIIText', () => {
   test('Encode and decode text', () => {
@@ -41,7 +42,9 @@ describe('ASCIIText', () => {
     expect(decodedMessage).toBe(myPrettyText);
 
     // Delete file
-    await promises.unlink(outputFile);
+    if (deleteFilesAfterTest) {
+      await promises.unlink(outputFile);
+    }
     done();
   });
 });

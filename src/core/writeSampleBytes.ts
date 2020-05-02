@@ -9,6 +9,7 @@ const writeSampleBytes = async (bytes: Array<number>) => {
     floatSampleDataMono[index] = SAMPLE_BYTE * uint8Value - 1;
     // floatSampleDataMono[index] = (uint8Value - 128) / 128.0;
   });
+  SAMPLE_RATE;
 
   const audioData = {
     sampleRate: SAMPLE_RATE,
