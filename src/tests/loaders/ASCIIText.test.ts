@@ -5,6 +5,7 @@ import Recorder from '@voyager-edsound/Recorder';
 import Reader from '@voyager-edsound/Reader';
 import ASCIIText from '@voyager-edsound/loaders/ASCIIText';
 import EncodedOutput from '@voyager-edsound/loaders/utils/EncodedOutput';
+import { deleteFilesAfterTest } from '../mocks';
 
 describe('ASCIIText', () => {
   test('Encode and decode text', () => {
@@ -13,7 +14,7 @@ describe('ASCIIText', () => {
       'abcdefghijklmnopqrstuvwxz1234567890-=!@#$%^&*()_+"<>[]/`±§çáàéèãõñúùÁÀÉÈÃÕÑÚÙ';
 
     const encoded: EncodedOutput = loader.encode(myPrettyText);
-    const decoded = loader.decode(encoded.bits);
+    const decoded = loader.decode(encoded.bytes);
     expect(decoded).toBe(myPrettyText);
   });
 
@@ -28,7 +29,7 @@ describe('ASCIIText', () => {
 
     const message: EncodedOutput = loader.encode(myPrettyText);
 
-    recorder.writeBits(message);
+    recorder.writeBytes(message);
     await recorder.endWithFile(outputFile);
 
     // Load the typeId from file Header, so that we can certify
@@ -36,14 +37,14 @@ describe('ASCIIText', () => {
     const fileTypeId = await reader.loadFileHeaderTypeId(outputFile);
     expect(fileTypeId).toBe(loader.header.getHeaderTypeId());
 
-    const bits = await reader.getBitsFromFile(outputFile);
-    expect(bits).toBe(message.bits);
-
-    const decodedMessage = loader.decode(bits);
+    const bytes = await reader.getBytesFromFile(outputFile);
+    const decodedMessage = loader.decode(bytes);
     expect(decodedMessage).toBe(myPrettyText);
 
     // Delete file
-    await promises.unlink(outputFile);
+    if (deleteFilesAfterTest) {
+      await promises.unlink(outputFile);
+    }
     done();
   });
 });

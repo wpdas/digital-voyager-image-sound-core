@@ -101,6 +101,46 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 
 - Os decoders de bitmap estão gerando arquivos
 
+## Melhoria
+
+Enquanto trabalhando na ferramenta desktop, percebi que é possível ler os bytes do arquivo do buffer bruto. Ou seja, ler o arquivo .wav bruto no formato Uint8Array (que já vai converter os sampleRates para decimal entre 0 - 255) pular os bits do Header WAV (que vai do 0 ao 43) e a partir daí, já é possível ler as informações dos Loaders. Exemplo: indice 44 vai ser o TypeId e dai por diante.
+
+Para obter a onda sonóra, basta converter Uint8Array para Float32Array.
+
+Link sobre conversão: https://stackoverflow.com/questions/34669537/javascript-uint8array-to-float32array
+
+Desta forma, vai ser poupado processo que tranforma os sampleRates em decimal. (Ver arquivo getBitsFromBuffer.ts)
+
+Aqui a solução já desenvolvida:
+
+```ts
+// ---------- Modo lendo os bytes do sampleRates direto com Uint8Array (retorna decimal) ---------
+// Não está sendo lido a informação de quantos canais, etc. Para saber disso, deve-se ler
+// o ponteiro certo na HEADER do arquivo WAV. Aqui esta sendo usado o modo default
+// do programa que é 1 canal com um sample rate de 44100
+const buffer: Buffer; // Buffer do arquivo de audio .wav codificado bruto.
+const decimalSampleData: Uint8Array = Uint8Array.from(buffer.slice(44)); // WAV header tem 44 bytes
+// basta agora converter os valores de `decimalSampleData` para binario no Reader do programa.
+
+// Se for necessário reproduzir o conteúdo, deve converter os valores para Float32Array que vai definir
+// o comprimento do sampleRate (modelo usado para audio):
+const floatSampleData: Float32Array = new Float32Array(
+  decimalSampleData.length
+);
+decimalSampleData.forEach((uint8Value, index) => {
+  floatSampleData[index] = (uint8Value - 128) / 128.0;
+});
+
+// Esse `floatSampleData` pode ser facilmente tocado usando este exemplo:
+// https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
+```
+
+Com essa solução, o moduleo `wav-decoder` pode ser descartado (a não ser que seja requerido ler o Wav Header). Mas creio que não.
+
+**ATENÇÃO: O inverso do processo acima deve ser feito também para gravar os dados usando o Recorder.**
+
+**ATENÇÃO 2:** O core precisará sofrer uma re-estruturação para não fazer conversões para binário representacional. Atualmente estou convertendo os valores para strings de 0s e 1s porque o processo de Gravar e Ler antigo, quando se usava tons, rigistrava o tom de acordo com o valor 0, 1 ou DIVISOR. Este processo de tons foi removido, assim sendo, o processo de se ter o binários em string também deve ser removido. Deve-se guardar os valores diretamente no formato Float32Array de cada Loader e este ser entregue ao Recorder posteriormente. O cálculo do SAMPLE BYTE vai servir apenas como referência e escrita de bytes (já que a fórmula para transformar Uint8 em Float32 está causando defeito de entregar o valor - 1)
+
 ## Util
 
 - Gerar BMP: https://online-converting.com/image/convert2bmp/#

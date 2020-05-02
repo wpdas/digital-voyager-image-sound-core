@@ -1,36 +1,31 @@
-import WavDecoder from 'wav-decoder';
-import decimalToBinary from './decimalToBinary';
-import { TYPE_ID_BITS_SIZE, SAMPLE_BYTE } from '@voyager-edsound/constants';
+import {
+  WAV_HEADER_BYTES_SIZE,
+  TYPE_ID_BYTE_SIZE,
+} from '@voyager-edsound/constants';
 
 /**
- * Reads bits located into the buffer and return it.
+ * Reads bytes located into the buffer and return it.
  * @param audioBuffer Buffer that will be decoded to obtain the bits
- * @param ignoreHeaderBits Should read bits ignoring the basic header bits. The header bits is where
+ * @param ignoreHeaderBytes Should read bytes ignoring the basic header bits. The header bits is where
  * basic data is stored like loader typeId. If you are reading a file wrote using some Header of this
- * software, you can set this as 'true', but, if you want just read a file containing only bits without
+ * software, you can set this as 'true', but, if you want just read a file containing only bytes without
  * a header, you should set this as 'false' (default).
  */
-const getBitsFromBuffer = async (
+export const getBitsFromBuffer = async (
   audioBuffer: Buffer,
-  ignoreHeaderBits: boolean = false
+  ignoreHeaderBytes: boolean = false
 ) => {
-  const audioData = await WavDecoder.decode(audioBuffer);
-  const audioDataBuffer: Float32Array = audioData.channelData[0];
-  let audioBits = '';
+  //Ignore WAV header - 44 bytes
+  const ignoreLengthSize = ignoreHeaderBytes
+    ? WAV_HEADER_BYTES_SIZE + TYPE_ID_BYTE_SIZE
+    : WAV_HEADER_BYTES_SIZE;
 
-  for (let i = 0; i < audioDataBuffer.length; i++) {
-    const byte = audioDataBuffer[i];
-    const byteFixSamplePosition = byte + 1;
-    const decimalNumber = Math.round(byteFixSamplePosition / SAMPLE_BYTE);
-    audioBits += decimalToBinary(decimalNumber, 8);
-  }
+  const sampleDataBuffer: Buffer = Buffer.alloc(
+    audioBuffer.byteLength - ignoreLengthSize
+  );
+  audioBuffer.copy(sampleDataBuffer, 0, ignoreLengthSize);
 
-  // This will ignore the first 8 bits every time in case of true
-  if (ignoreHeaderBits == true && audioBits.length >= TYPE_ID_BITS_SIZE) {
-    audioBits = audioBits.slice(TYPE_ID_BITS_SIZE);
-  }
-
-  return audioBits;
+  return Uint8Array.from(sampleDataBuffer);
 };
 
 export default getBitsFromBuffer;

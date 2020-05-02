@@ -1,23 +1,24 @@
 import WavEncoder from 'wav-encoder';
-import sliceTextInChunks from './sliceTextInChunks';
-import binaryToDecimal from './binaryToDecimal';
-import { SAMPLE_BYTE } from '@voyager-edsound/constants';
+import { SAMPLE_BYTE, SAMPLE_RATE } from '@voyager-edsound/constants';
 
-export const writeSampleBytes = async (bits: string) => {
-  const decimal = sliceTextInChunks(bits, 8).map((binaryData) =>
-    binaryToDecimal(binaryData)
-  );
-  const sampleBytes = decimal.map(
-    (decimalNumber) => SAMPLE_BYTE * decimalNumber - 1
-  );
+const writeSampleBytes = async (bytes: Array<number>) => {
+  const floatSampleDataMono: Float32Array = new Float32Array(bytes.length);
+
+  bytes.forEach((uint8Value, index) => {
+    // Using this formula avoid ther error caused by second formula
+    floatSampleDataMono[index] = SAMPLE_BYTE * uint8Value - 1;
+    // floatSampleDataMono[index] = (uint8Value - 128) / 128.0;
+  });
+  SAMPLE_RATE;
+
   const audioData = {
-    sampleRate: 44100,
-    channelData: [new Float32Array(sampleBytes)],
+    sampleRate: SAMPLE_RATE,
+    channelData: [floatSampleDataMono],
   };
 
   const arrayBuffer = await WavEncoder.encode(audioData, { bitDepth: 8 });
 
-  return new Buffer(arrayBuffer);
+  return Buffer.from(arrayBuffer);
 };
 
 export default writeSampleBytes;
