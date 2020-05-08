@@ -1,5 +1,5 @@
 import { promises } from 'fs';
-import getBitsFromBuffer from '@voyager-edsound/core/getBitsFromBuffer';
+import getBytesFromBuffer from '@voyager-edsound/core/getBytesFromBuffer';
 import readBytes from '@voyager-edsound/core/readBytes';
 import {
   TYPE_ID_BITS_SIZE,
@@ -42,7 +42,7 @@ class Reader implements IReader {
    * @param {Buffer} buffer Buffer that will be decoded to obtain the bits
    */
   getBytesFromBuffer = async (buffer: Buffer) => {
-    return getBitsFromBuffer(buffer);
+    return getBytesFromBuffer(buffer);
   };
 
   /**
@@ -52,8 +52,7 @@ class Reader implements IReader {
   getBytesFromFile = async (fileDir: string) => {
     const { readFile } = promises;
     const buffer = await readFile(fileDir);
-
-    return await getBitsFromBuffer(buffer);
+    return await getBytesFromBuffer(buffer);
   };
 }
 

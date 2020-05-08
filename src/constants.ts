@@ -39,4 +39,16 @@ export const loadersTypeId = {
   BITMAP_2BITS_PP: 4,
   BITMAP_4BITS_PP: 5,
   BITMAP_8BITS_PP: 6,
+  VIDEO_4BITS_PP: 7,
 };
+
+/**
+ * Array containing Bitmap loaders ids
+ */
+export const bitmapTypeIds = [
+  loadersTypeId.BITMAP,
+  loadersTypeId.BITMAP_1BIT_PP,
+  loadersTypeId.BITMAP_2BITS_PP,
+  loadersTypeId.BITMAP_4BITS_PP,
+  loadersTypeId.BITMAP_8BITS_PP,
+];

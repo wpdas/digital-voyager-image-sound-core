@@ -1,10 +1,11 @@
 import ILoader from './ILoader';
 import Header from './utils/Header';
 import EncodedOutput from './utils/EncodedOutput';
-import { loadersTypeId } from '@voyager-edsound/constants';
-import { asciiToBytes, bytesToAscii } from '@voyager-edsound/core';
+import { loadersTypeId, TYPE_ID_BYTE_SIZE } from '../constants';
+import asciiToBytes from '../core/asciiToBytes';
+import bytesToAscii from '../core/bytesToAscii';
 
-class ASCIIText implements ILoader<string> {
+class ASCIIText implements ILoader<string, null, void> {
   public header: Header = new Header(loadersTypeId.ASCII_TEXT);
 
   /**
@@ -44,6 +45,16 @@ class ASCIIText implements ILoader<string> {
 
     return bytesToAscii(asciiDataByteArray);
   }
+
+  /**
+   * Get only sample data from bytes. Bytes must be delivered by Reader
+   * @param bytes bytes containing the data
+   */
+  getSampleData(bytes: Uint8Array) {
+    return bytes.slice(TYPE_ID_BYTE_SIZE);
+  }
+
+  decodeChunk() {}
 }
 
 export default ASCIIText;

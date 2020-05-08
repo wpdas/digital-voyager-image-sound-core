@@ -1,5 +1,5 @@
 import WavEncoder from 'wav-encoder';
-import { SAMPLE_BYTE, SAMPLE_RATE } from '@voyager-edsound/constants';
+import { SAMPLE_BYTE, SAMPLE_RATE } from '../constants';
 
 const writeSampleBytes = async (bytes: Array<number>) => {
   const floatSampleDataMono: Float32Array = new Float32Array(bytes.length);

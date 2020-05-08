@@ -1,18 +1,26 @@
 import ILoader from './ILoader';
 import Header from './utils/Header';
 import EncodedOutput from './utils/EncodedOutput';
-import { loadersTypeId } from '@voyager-edsound/constants';
-import {
-  encodeBitmapPerPixel,
-  decodeBitmapPerPixel,
-} from '@voyager-edsound/core';
+import { loadersTypeId, TYPE_ID_BYTE_SIZE } from '../constants';
+import encodeBitmapPerPixel from '../core/encodeBitmapPerPixel';
+import decodeBitmapPerPixel from '../core/decodeBitmapPerPixel';
+import decimalToBinary from '../core/decimalToBinary';
+import sliceTextInChunks from '../core/sliceTextInChunks';
+import bppToHex from '../core/bppToHex';
+import binaryToDecimal from '../core/binaryToDecimal';
 
-class Bitmap1bitpp implements ILoader<Buffer> {
+interface DecodeChunkProps {
+  data: Uint8ClampedArray;
+  imageData: Uint8Array;
+  bytesChunk: number;
+}
+
+class Bitmap1bitpp implements ILoader<Buffer, DecodeChunkProps, void> {
   private BPP = 1;
   public header: Header = new Header(loadersTypeId.BITMAP_1BIT_PP);
 
   /**
-   * Bitmap1bytepp Loader - encoder and decoder. This will take only 1 byte of color and
+   * Bitmap1bitpp Loader - encoder and decoder. This will take only 1 byte of color and
    * generate a bitmap with 24 bytes containing the gray factor. The encoded
    * data will store only 1 bit per pixel.
    *
@@ -49,6 +57,52 @@ class Bitmap1bitpp implements ILoader<Buffer> {
     }
 
     return decodeBitmapPerPixel(bytes, this.BPP);
+  }
+
+  /**
+   * Get only sample data from bytes. Bytes can be delivered by Reader
+   * @param bytes bytes containing the data
+   */
+  getSampleData(bytes: Uint8Array) {
+    const additionalHeaderBits = 4;
+    const headerBitsSize = TYPE_ID_BYTE_SIZE + additionalHeaderBits;
+    return bytes.slice(headerBitsSize);
+  }
+
+  private position = 0;
+  private groupPosition = 0;
+
+  /**
+   * Process every file bytes and converts each value to an RGBA (integers in the range 0 to 255) that'll
+   * be put into a slot of a imageData (Uint8ClampedArray). Each 4 slots represents an RGBA pixel.
+   *
+   * @param data one-dimensional array containing the data in RGBA order, as integers in the range 0 to 255. This is provided by a Canvas context.
+   * @param imageData Bitmap wav data
+   * @param bytesChunk The amount of bytes that must be read in this cycle
+   */
+  decodeChunk({ data, imageData, bytesChunk }: DecodeChunkProps) {
+    for (let i = 0; i < bytesChunk; i++) {
+      const imageDataPixelsInfo = imageData[this.position];
+      const imageDataGroup = sliceTextInChunks(
+        decimalToBinary(imageDataPixelsInfo),
+        this.BPP
+      );
+
+      for (let d = 0; d < imageDataGroup.length; d++) {
+        const colorFactor = bppToHex(
+          binaryToDecimal(imageDataGroup[d]),
+          this.BPP
+        );
+
+        data[this.groupPosition * 4] = colorFactor;
+        data[this.groupPosition * 4 + 1] = colorFactor;
+        data[this.groupPosition * 4 + 2] = colorFactor;
+        data[this.groupPosition * 4 + 3] = 255;
+
+        this.groupPosition++;
+      }
+      this.position++;
+    }
   }
 }
 

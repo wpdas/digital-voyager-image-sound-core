@@ -2,12 +2,10 @@ import asciiToBytes from './asciiToBytes';
 import binaryToDecimal from './binaryToDecimal';
 import bytesToAscii from './bytesToAscii';
 import bppToHex from './bppToHex';
-import checkTypeId from './checkTypeId';
 import decimalToBinary from './decimalToBinary';
 import decimalToHex from './decimalToHex';
-import fixBits from './fixBits';
 import forceBitsSize from './forceBitsSize';
-import getBitsFromBuffer from './getBitsFromBuffer';
+import getBytesFromBuffer from './getBytesFromBuffer';
 import hexToBpp from './hexToBpp';
 import hexToDecimal from './hexToDecimal';
 import readBytes from './readBytes';
@@ -27,12 +25,10 @@ export {
   binaryToDecimal,
   bytesToAscii,
   bppToHex,
-  checkTypeId,
   decimalToBinary,
   decimalToHex,
-  fixBits,
   forceBitsSize,
-  getBitsFromBuffer,
+  getBytesFromBuffer,
   hexToBpp,
   hexToDecimal,
   readBytes,

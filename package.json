@@ -2,7 +2,8 @@
   "name": "voyager-edsound",
   "version": "0.0.1",
   "description": "An audio bit converter based on the Voyager Golden Record Disc. You can store and read data using audio sample rates.",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "clean": "rm -rf lib/",
     "build": "npm run clean && tsc",
@@ -31,6 +32,7 @@
     "@types/bmp-js": "^0.1.0",
     "@types/jest": "^25.1.5",
     "@types/node": "^13.11.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "jest": "^25.2.7",
     "ts-jest": "^25.3.1",
     "ts-node": "^8.8.1"

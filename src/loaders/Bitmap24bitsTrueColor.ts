@@ -2,10 +2,19 @@ import bmp from 'bmp-js';
 import ILoader from './ILoader';
 import Header from './utils/Header';
 import EncodedOutput from './utils/EncodedOutput';
-import { numberToUint8, uint8ToNumber } from '@voyager-edsound/core';
-import { loadersTypeId, TYPE_ID_BYTE_SIZE } from '@voyager-edsound/constants';
+import numberToUint8 from '../core/numberToUint8';
+import uint8ToNumber from '../core/uint8ToNumber';
 
-class Bitmap24bitsTrueColor implements ILoader<Buffer> {
+import { loadersTypeId, TYPE_ID_BYTE_SIZE } from '../constants';
+
+interface DecodeChunkProps {
+  totalSamplesSize: number;
+  data: Uint8ClampedArray;
+  imageData: Uint8Array;
+  bytesChunk: number;
+}
+
+class Bitmap24bitsTrueColor implements ILoader<Buffer, DecodeChunkProps, void> {
   public header: Header = new Header(loadersTypeId.BITMAP);
 
   /**
@@ -35,18 +44,25 @@ class Bitmap24bitsTrueColor implements ILoader<Buffer> {
     this.header.addBytes(widthBits);
     this.header.addBytes(heightBits);
 
+    const redSamples: Array<number> = [];
+    const greenSamples: Array<number> = [];
+    const blueSamples: Array<number> = [];
+
     // Get image pixels buffer
     const imageData = bmpData.getData();
-    let bitmapByteArray: Array<number> = [];
 
-    for (let y = 1; y < imageData.length; y++) {
-      // Ignore the QUAD bits
-      if (y % 4 !== 0) {
-        bitmapByteArray.push(imageData.readUInt8(y));
-      }
+    for (let y = 3; y < imageData.length; y += 4) {
+      blueSamples.push(imageData.readUInt8(y - 2));
+      greenSamples.push(imageData.readUInt8(y - 1));
+      redSamples.push(imageData.readUInt8(y));
     }
 
-    return new EncodedOutput(this.header, bitmapByteArray);
+    console.log(blueSamples.length, greenSamples.length, redSamples.length);
+
+    return new EncodedOutput(
+      this.header,
+      blueSamples.concat(greenSamples, redSamples)
+    );
   }
 
   /**
@@ -78,14 +94,16 @@ class Bitmap24bitsTrueColor implements ILoader<Buffer> {
       // Bitmap byte array
       const bitmapDataByteArray: Array<number> = [];
       const imageBytes = bytes.slice(headerBitsSize);
+      const colorSamplesSize = imageBytes.length / 3; // (RGB)
+      console.log(colorSamplesSize);
 
-      for (let y = 0; y < imageBytes.length; y += 3) {
+      for (let y = 0; y < colorSamplesSize; y++) {
         // QUAD, BLUE, GREEN, RED (QBGR)
         bitmapDataByteArray.push(
           0,
           imageBytes[y],
-          imageBytes[y + 1],
-          imageBytes[y + 2]
+          imageBytes[y + colorSamplesSize],
+          imageBytes[y + colorSamplesSize * 2]
         );
       }
 
@@ -103,6 +121,57 @@ class Bitmap24bitsTrueColor implements ILoader<Buffer> {
     }
 
     return output;
+  }
+
+  /**
+   * Get only sample data from bytes. Bytes can be delivered by Reader
+   * @param bytes bytes containing the data
+   */
+  getSampleData(bytes: Uint8Array) {
+    const additionalHeaderBits = 4;
+    const headerBitsSize = TYPE_ID_BYTE_SIZE + additionalHeaderBits;
+    return bytes.slice(headerBitsSize);
+  }
+
+  private position = 0;
+
+  /**
+   * Process every file bytes and converts each value to an RGBA (integers in the range 0 to 255) that'll
+   * be put into a slot of a imageData (Uint8ClampedArray). Each 4 slots represents an RGBA pixel.
+   *
+   * @param totalSamplesSize Sample bytes length (bytes data without wav header and loader header)
+   * @param data one-dimensional array containing the data in RGBA order, as integers in the range 0 to 255. This is provided by a Canvas context.
+   * @param imageBuffer Bitmap wav data
+   * @param bytesChunk The amount of bytes that must be read in this cycle
+   */
+  decodeChunk({
+    totalSamplesSize,
+    data,
+    imageData,
+    bytesChunk,
+  }: DecodeChunkProps) {
+    const colorSamplesSize = totalSamplesSize / 3;
+    for (let y = 0; y < bytesChunk; y++) {
+      // BLUE, GREEN, RED (BGR) - The same way this bitmap is encoded
+      if (this.position <= colorSamplesSize) {
+        data[this.position * 4 + 2] = imageData[this.position]; // Blue -
+        data[this.position * 4 + 3] = 255;
+      } else if (
+        this.position > colorSamplesSize &&
+        this.position <= colorSamplesSize * 2
+      ) {
+        data[this.position * 4 + 1 - colorSamplesSize * 4] =
+          imageData[this.position]; // Green -
+      } else if (
+        this.position > colorSamplesSize * 2 &&
+        this.position <= colorSamplesSize * 3
+      ) {
+        data[this.position * 4 - colorSamplesSize * 2 * 4] =
+          imageData[this.position]; // Red -
+      }
+
+      this.position++;
+    }
   }
 }
 

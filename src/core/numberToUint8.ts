@@ -1,7 +1,7 @@
 import decimalToBinary from './decimalToBinary';
 import sliceTextInChunks from './sliceTextInChunks';
 import binaryToDecimal from './binaryToDecimal';
-import { DEFAULT_BITS_DEPTH } from '@voyager-edsound/constants';
+import { DEFAULT_BITS_DEPTH } from '../constants';
 
 /**
  * Converts any number to Uint8 number.
