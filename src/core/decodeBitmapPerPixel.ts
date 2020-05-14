@@ -1,15 +1,10 @@
 import bmp from 'bmp-js';
-import {
-  TYPE_ID_BYTE_SIZE,
-  DEFAULT_BITS_DEPTH,
-} from '@voyager-edsound/constants';
-import {
-  sliceTextInChunks,
-  decimalToBinary,
-  binaryToDecimal,
-  bppToHex,
-  uint8ToNumber,
-} from './index';
+import { TYPE_ID_BYTE_SIZE, DEFAULT_BITS_DEPTH } from '../constants';
+import sliceTextInChunks from './sliceTextInChunks';
+import decimalToBinary from './decimalToBinary';
+import binaryToDecimal from './binaryToDecimal';
+import bppToHex from './bppToHex';
+import uint8ToNumber from './uint8ToNumber';
 
 /**
  * Decodes bitmap data using any bit depth less than 8 bits

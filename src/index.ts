@@ -1,8 +1,9 @@
-import DecodedChunks from './DecodedChunks';
 import Reader from './Reader';
 import Recorder from './Recorder';
+import * as helpers from './helpers';
+import * as core from './core';
 
 /**
  * Main resources
  */
-export { DecodedChunks, Reader, Recorder };
+export { Reader, Recorder, helpers, core };

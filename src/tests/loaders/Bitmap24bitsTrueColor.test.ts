@@ -21,7 +21,7 @@ describe('Bitmap', () => {
     done();
   });
 
-  test('Encode, decode and save as bitmap)', async (done) => {
+  test.only('Encode, decode and save as bitmap)', async (done) => {
     const recorder: Recorder = new Recorder();
     const reader: Reader = new Reader();
 

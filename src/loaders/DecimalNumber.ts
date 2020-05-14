@@ -1,10 +1,11 @@
 import ILoader from './ILoader';
 import Header from './utils/Header';
 import EncodedOutput from './utils/EncodedOutput';
-import { loadersTypeId } from '@voyager-edsound/constants';
-import { numberToUint8, uint8ToNumber } from '@voyager-edsound/core';
+import { loadersTypeId, TYPE_ID_BYTE_SIZE } from '../constants';
+import numberToUint8 from '../core/numberToUint8';
+import uint8ToNumber from '../core/uint8ToNumber';
 
-class DecimalNumber implements ILoader<number> {
+class DecimalNumber implements ILoader<number, null, void> {
   public header: Header = new Header(loadersTypeId.DECIMAL_NUMBER);
 
   /**
@@ -46,6 +47,16 @@ class DecimalNumber implements ILoader<number> {
 
     return uint8ToNumber(decimalDataByteArray);
   }
+
+  /**
+   * Get only sample data from bytes. Bytes must be delivered by Reader
+   * @param bytes bytes containing the data
+   */
+  getSampleData(bytes: Uint8Array) {
+    return bytes.slice(TYPE_ID_BYTE_SIZE);
+  }
+
+  decodeChunk() {}
 }
 
 export default DecimalNumber;

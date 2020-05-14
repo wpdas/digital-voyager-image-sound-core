@@ -1,7 +1,7 @@
 import { isString } from 'util';
 import { promises, read } from 'fs';
-import getBitsFromBuffer from './getBitsFromBuffer';
-import { WAV_HEADER_BYTES_SIZE } from '@voyager-edsound/constants';
+import getBytesFromBuffer from './getBytesFromBuffer';
+import { WAV_HEADER_BYTES_SIZE } from '../constants';
 
 const { open } = promises;
 
@@ -30,14 +30,14 @@ const readBytes = async (
         informationSizeNeeded,
         0,
         async (_, __, headerBuffer) => {
-          headerInBits = await getBitsFromBuffer(headerBuffer);
+          headerInBits = await getBytesFromBuffer(headerBuffer);
           resolve(headerInBits.slice(position, position + length));
         }
       );
     });
   }
 
-  headerInBits = await getBitsFromBuffer(file as Buffer);
+  headerInBits = await getBytesFromBuffer(file as Buffer);
   return headerInBits.slice(position, position + length);
 };
 

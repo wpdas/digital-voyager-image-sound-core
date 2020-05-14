@@ -20,7 +20,8 @@ export const decimalNumber29Wav = {
  * Calibration Circle
  */
 export const calibrationCircleBmp = {
-  bmpFile: path.join(__dirname, 'calibration_circle.bmp'),
+  // bmpFile: path.join(__dirname, 'calibration_circle.bmp'),
+  bmpFile: path.join(__dirname, 'indigena.bmp'),
 };
 
 /**
