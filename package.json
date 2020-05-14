@@ -1,5 +1,5 @@
 {
-  "name": "voyager-edsound",
+  "name": "digital-voyager-image-sound-core",
   "version": "0.0.1",
   "description": "An audio bit converter based on the Voyager Golden Record Disc. You can store and read data using audio sample rates.",
   "main": "./lib/index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/wpdas/voyager-edsound.git"
+    "url": "git+ssh://git@github.com/wpdas/digital-voyager-image-sound.git"
   },
   "author": "Wenderson Pires <wendersonpdas@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wpdas/voyager-edsound/issues"
+    "url": "https://github.com/wpdas/digital-voyager-image-sound/issues"
   },
-  "homepage": "https://github.com/wpdas/voyager-edsound#readme",
+  "homepage": "https://github.com/wpdas/digital-voyager-image-sound#readme",
   "dependencies": {
     "bmp-js": "^0.1.0",
     "typescript": "^3.8.3",

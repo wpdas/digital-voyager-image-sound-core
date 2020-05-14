@@ -82,7 +82,7 @@ O projeto tem diversos testes. Por hora, use-os como documentação. Esse conte�
 
   - Sobre o hidrogêncio e seu comprimento: https://en.wikipedia.org/wiki/Hydrogen_line
 
-- Sampre rate vai de -1 a 1, ou seja, temos um total de 2 de cumprimento, para se achar o "SampleByte" basta fazer o cálculo
+- Sample rate vai de -1 a 1, ou seja, temos um total de 2 de cumprimento, para se achar o "SampleByte" basta fazer o cálculo
   2 / 255 (valor total de 1 byte em decimal) que vai dar 0.0078431373;
 
 - Para guardar os valores basta fazer o seguinte cálculo:

@@ -1,6 +1,7 @@
 import getTypeIdFromBuffer from './getTypeIdFromBuffer';
 import getBitmapHeaderInfo, { BitmapWavHeader } from './getBitmapHeaderInfo';
 import getLoaderByTypeId, { Loader } from './getLoaderByTypeId';
+import writeBitmapLoaderHeader from './writeBitmapLoaderHeader';
 
 export {
   getTypeIdFromBuffer,
@@ -8,4 +9,5 @@ export {
   BitmapWavHeader,
   getLoaderByTypeId,
   Loader,
+  writeBitmapLoaderHeader,
 };

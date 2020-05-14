@@ -57,8 +57,6 @@ class Bitmap24bitsTrueColor implements ILoader<Buffer, DecodeChunkProps, void> {
       redSamples.push(imageData.readUInt8(y));
     }
 
-    console.log(blueSamples.length, greenSamples.length, redSamples.length);
-
     return new EncodedOutput(
       this.header,
       blueSamples.concat(greenSamples, redSamples)
@@ -95,7 +93,6 @@ class Bitmap24bitsTrueColor implements ILoader<Buffer, DecodeChunkProps, void> {
       const bitmapDataByteArray: Array<number> = [];
       const imageBytes = bytes.slice(headerBitsSize);
       const colorSamplesSize = imageBytes.length / 3; // (RGB)
-      console.log(colorSamplesSize);
 
       for (let y = 0; y < colorSamplesSize; y++) {
         // QUAD, BLUE, GREEN, RED (QBGR)
